@@ -1,33 +1,4 @@
-import base64
 import codecs
-import operator
-
-
-def task1():
-    """
-    Convert hex to base64
-    Input:  "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
-    Output: "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
-    """
-
-    input = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
-    print()
-    print("# Initial input (Hex)")
-    print(input, '\n')
-
-    input_bytes = codecs.decode(input, encoding='hex')
-    print("# Bytes")
-    print(input_bytes, '\n')
-
-    output = base64.b64encode(input_bytes)
-    print("# Output (base64)")
-    print(output, '\n')
-
-    # Check answer is valid:
-    if output == b"SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t":
-        print("# Task 1 passed!")
-    else:
-        print("# Task 1 failed!!")
 
 
 def task2():
@@ -38,7 +9,7 @@ def task2():
     Input:
         - "1c0111001f010100061a024b53535009181c"
         - "686974207468652062756c6c277320657965"
-    
+
     Output:
         - "746865206b696420646f6e277420706c6179"
     """
@@ -72,7 +43,6 @@ def fXOR(input1, input2):
 
     xored = bytes([a ^ b for a, b in zip(hex1, hex2)])
     return codecs.encode(xored, 'hex')
-    
 
-task1()
+
 task2()
