@@ -5,7 +5,7 @@ def ASCIIToHex(string):
     """
     Converts an utf-8 string to a hex string
     """
-
+    string = string.strip()
     b = codecs.encode(string, 'utf-8')
     return codecs.encode(b, 'hex')
 
@@ -18,6 +18,14 @@ def HexToASCII(hex):
     b = codecs.decode(hex, 'hex')
     return codecs.decode(b, 'utf-8')
 
+
+def HexToASCIICheck(hex):
+    try:
+        h = codecs.decode(hex, 'hex')
+        u = codecs.decode(h, 'utf-8')
+        return True
+    except Exception as e:
+        return False
 
 # XOR Code
 def fXOR(input1, input2):
