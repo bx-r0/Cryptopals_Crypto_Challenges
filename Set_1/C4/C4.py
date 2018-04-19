@@ -3,31 +3,25 @@ import collections
 import re
 import sys
 import string
-sys.path.insert(0, '..')
+sys.path.insert(0, '../..')
 import Function
 
 # ETAOIN SHRDLU - Most common frequency of letters in the english langaug in order of frequency
 common_characters = []
-
-
 
 def task4():
     """
     Detect single-character XOR
     One of the 60-character strings in this file has been encrypted by single-character XOR.
     """
-    print('##################')
-    print('##### START ######')
-    print('##################')
 
     input = load()
 
-    # Adds all combinations for a key
+    # Adds all single character hex combinations for a key
     for x in range(0, 255):
         common_characters.append(str(format(x, '02x')))
 
-    del input[-1]
-
+    # Removes new line char
     for line in input:
         line = line.strip()  # Removes the line ending char
 
@@ -49,18 +43,17 @@ def task4():
             if Function.HexToASCIICheck(answer):
                 answer = Function.HexToASCII(answer)
 
-                if all(c in string.printable for c in answer) and answer != "":
-                    print_poss(line, key, answer)
+                if re.match('^[A-Za-z _.,!"\'$]*$', answer) is not None:
+                    if all(c in string.printable for c in answer) and answer != "":
+                        print_poss(line, key, answer)
 
 
 def print_poss(line, key, answer):
     print()
-    print("-" * 60)
     print("## Possibility ##")
     print("Cipher:          ", line)
     print("Key:             ", key)
     print("Possible Answer: ", answer)
-    print("-" * 60)
     print()
 
 
