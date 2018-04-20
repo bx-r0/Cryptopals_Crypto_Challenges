@@ -30,13 +30,13 @@ def task3():
 
     for char in common_characters:
         # The most common XORd with e will give the key
-        k = Function.fXOR(most_common, Function.ASCIIToHex(char))
+        k = Function.strxor(most_common, Function.ASCIIToHex(char))
         k = str(codecs.decode(k, 'utf-8'))
         print("Key tried: ", k)
 
         key = k * round(len(input) / 2)
 
-        answer = Function.fXOR(input, key)
+        answer = Function.strxor(input, key)
         answer = Function.HexToASCII(answer)
 
         # Regex to check string contains alphanumeric values and punctuation

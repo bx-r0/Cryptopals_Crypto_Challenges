@@ -34,11 +34,11 @@ def task4():
         for char in common_characters:
 
             # The most common XORd with e will give the key
-            k = Function.fXOR(most_common, char)
+            k = Function.strxor(most_common, char)
             k = str(codecs.decode(k, 'utf-8'))
 
             key = k * round(len(line) / 2)
-            answer = Function.fXOR(line, key)
+            answer = Function.strxor(line, key)
 
             if Function.HexToASCIICheck(answer):
                 answer = Function.HexToASCII(answer)
@@ -58,7 +58,7 @@ def print_poss(line, key, answer):
 
 
 def load():
-    file = open('C4_Data.txt')
+    file = open('data.txt')
     return file.readlines()
 
 

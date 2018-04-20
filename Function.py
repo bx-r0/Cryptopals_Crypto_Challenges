@@ -1,4 +1,28 @@
 import codecs
+import base64
+
+
+def rm_byte(string):
+    """
+    Removes the 'b at the start of a byte string
+    """
+    return codecs.decode(string, 'utf-8')
+
+
+def base64_to_hex(input):
+    """
+    TODO
+    """
+    bytes = base64.b64decode(input)
+    return codecs.encode(bytes, 'hex')
+
+
+def hex_to_base64(input):
+    """
+    TODO
+    """
+    input_bytes = codecs.decode(input, 'hex')
+    return base64.b64encode(input_bytes)
 
 
 def ASCIIToHex(string):
@@ -20,6 +44,9 @@ def HexToASCII(hex):
 
 
 def HexToASCIICheck(hex):
+    """
+    TODO
+    """
     try:
         h = codecs.decode(hex, 'hex')
         u = codecs.decode(h, 'utf-8')
@@ -27,16 +54,15 @@ def HexToASCIICheck(hex):
     except Exception as e:
         return False
 
-# XOR Code
-def fXOR(input1, input2):
-    """
-    XORing for two fixed strings
-    """
-    # Checks if it is not a byte object
-    hex1 = codecs.decode(input1, 'hex')
-    hex2 = codecs.decode(input2, 'hex')
 
-    xored = bytes([a ^ b for a, b in zip(hex1, hex2)])
-    return codecs.encode(xored, 'hex')
+def strxor(a, b):
+    """
+    XOR operation for two different strings.
+    This method also supports differing length strings
+    """
+    if len(a) > len(b):
+        return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a[:len(b)], b)])
+    else:
+        return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b[:len(a)])])
 
 
