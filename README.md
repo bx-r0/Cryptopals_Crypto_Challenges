@@ -6,7 +6,7 @@ https://cryptopals.com/
 - [X] ~~Fixed XOR~~
 - [X] ~~Single-byte XOR cipher~~
 - [X] ~~Detect single-character XOR~~
-- [ ] Implement repeating-key XOR
+- [X] ~~Implement repeating-key XOR~~
 - [ ] Break repeating-key XOR
 - [ ] AES in ECB mode
 - [ ] Detect AES in ECB mode
