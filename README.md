@@ -2,11 +2,11 @@
 https://cryptopals.com/
 
 # Set 1 - The Basics
-- [X] **Convert hex to base64**
-- [X] **Fixed XOR**
-- [X] **Single-byte XOR cipher**
-- [ ] Detect single-character XOR
-- [ ] Implement repeating-key XOR
+- [X] ~~Convert hex to base64~~
+- [X] ~~Fixed XOR~~
+- [X] ~~Single-byte XOR cipher~~
+- [X] ~~Detect single-character XOR~~
+- [X] ~~Implement repeating-key XOR~~
 - [ ] Break repeating-key XOR
 - [ ] AES in ECB mode
 - [ ] Detect AES in ECB mode
