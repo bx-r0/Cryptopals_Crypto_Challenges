@@ -22,29 +22,8 @@ def task5():
 
 
 def encrypt(msg):
-    xor = Function.strxor(gen_key(msg), msg)
+    xor = Function.strxor(Function.gen_key(msg), msg)
     return Function.ASCIIToHex(xor)
-
-
-def gen_key(string):
-    """
-    Generates the repeating sequence of the key
-    """
-    length = len(string)
-
-    total_key = ""
-    looper = 0
-    for i in range(0, length):
-
-        total_key += key[looper]
-
-        # If the looper goes over the boundary reset
-        if looper >= len(key) - 1:
-            looper = 0
-        else:
-            looper += 1
-
-    return total_key
 
 
 task5()

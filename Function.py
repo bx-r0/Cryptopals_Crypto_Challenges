@@ -129,3 +129,24 @@ def score_distribution(text):
         score += abs(english_freq_letter - actual_freq_letter)
 
     return score
+
+
+def gen_key(string, key):
+    """
+    Generates the repeating sequence of the Vigenere key
+    """
+    length = len(string)
+
+    total_key = ""
+    looper = 0
+    for i in range(0, length):
+
+        total_key += key[looper]
+
+        # If the looper goes over the boundary reset
+        if looper >= len(key) - 1:
+            looper = 0
+        else:
+            looper += 1
+
+    return total_key

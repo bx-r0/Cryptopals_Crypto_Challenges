@@ -8,40 +8,12 @@ import string
 import re
 import Function
 import os
+import binascii
 
 
-KEY_SIZE_RANGE = range(1, 40)
-ALPHABET = string.ascii_uppercase
-KEY_SPACE = string.ascii_uppercase + string.ascii_lowercase
-ENGLISH_LANGUAGE_DISTRIBUTION = [8.2,
-                                 1.5,
-                                 2.8,
-                                 4.3,
-                                 12.7,
-                                 2.2,
-                                 2.0,
-                                 6.1,
-                                 7.0,
-                                 0.2,
-                                 0.8,
-                                 4.0,
-                                 2.4,
-                                 6.7,
-                                 7.5,
-                                 1.9,
-                                 0.1,
-                                 6.0,
-                                 6.3,
-                                 9.1,
-                                 2.8,
-                                 1.0,
-                                 2.4,
-                                 0.2,
-                                 2.0,
-                                 0.1]
-print(string.punctuation)
 
 
+KEY_SIZE_RANGE = range(1, 30)
 
 def breakSingleKey(transpose_byte):
     frequency_lists = []
@@ -55,16 +27,12 @@ def breakSingleKey(transpose_byte):
         # XORs the key attempt with the transposed byte
         key_attempt = format(key, '#04x')[2:] * round(len(transpose_byte) / 2)
 
-        if len(key_attempt) != len(transpose_byte):
-            raise("issue!")
-
         xor = Function.hexxor(transpose_byte, key_attempt)
 
         # Attepts a conversion to ascii, if that fails the key will be ignored
         try:
             output = Function.HexToASCII(xor)
             
-            #if re.match(r"^[a-zA-Z0-9 \n!\"\'\#\$\%\&\(\)\*\+\,\-\.\/\:\;\<\=\>\?\@\[\]\^\_\`\{\|\}\~\\]*$", output):
             score = Function.score_distribution(output)
             
             if bestScore is None or bestScore > score:
@@ -76,10 +44,10 @@ def breakSingleKey(transpose_byte):
     
     return bestKey
 
-
-
 def task6():
     DATA=load()
+
+    keys = []
 
     # Ranks the most likely key length
     key_size_and_hamming=rank_possible_key_length(DATA)
@@ -98,13 +66,35 @@ def task6():
         # Loops round each key as a key
         for transpose_byte in transpose_chunks:
             disovered_key.append(breakSingleKey(transpose_byte))
-            
 
-        # PRINTS KEY
-        print("Key Size:", possible_key_size, " - ", end='')
-        for x in disovered_key:
-            print(x, end='', flush=True)
-        print()
+        keys.append("".join(disovered_key))
+
+
+    dataHex = Function.base64_to_hex(DATA)
+    dataHex = Function.rm_byte(dataHex)
+
+    # score, key, text
+    best = (None, None, None)
+
+    # Use keys to fully decrypt
+    for key in keys:
+        keyHex = Function.ASCIIToHex(key)
+        keyHex = Function.rm_byte(keyHex)
+
+        fullLengthKey = Function.gen_key(dataHex, keyHex)
+
+        xor = Function.hexxor(dataHex, fullLengthKey)
+
+        text = Function.HexToASCII(xor)
+
+        score = Function.score_distribution(text)
+
+        if best[0] is None or score < best[0]:
+            best = (score, key, text)
+
+    print("Best values:")
+    print(f"KEY: {best[1]}")
+    print(f"TEXT: \n {best[2]}")
 
 
 def split_into_bytes(string, number):
@@ -184,39 +174,6 @@ def transpose_bytes(data_chunks):
 
     return transposed
 
-
-def single_key_crack(input_str):
-    """
-    TODO
-    :param input_str:
-    :return:
-    """
-    # Uses regex to group values into hex pairs
-    decode=re.findall('..', input_str)
-
-    # Finds the most common hex pair
-    most_common=collections.Counter(decode).most_common(1)[0][0]
-
-    # Adds all single character hex combinations for a key
-    common_characters=[]
-    for x in range(0, 255):
-        common_characters.append(str(format(x, '02x')))
-
-    for char in common_characters:
-        # The most common XORd with e will give the key
-        k=Function.strxor(most_common, Function.ASCIIToHex(char))
-        k=str(codecs.decode(k, 'utf-8'))
-        print("Key tried: ", k)
-
-        key=k * round(len(input_str) / 2)
-
-        answer=Function.strxor(input_str, key)
-        answer=Function.HexToASCII(answer)
-
-        # Regex to check string contains alphanumeric values and punctuation
-        if re.match('^[A-Za-z _.,!"\'$]*$', answer) is not None:
-            print("### ANSWER FOUND:\'", answer, '\'')
-            print("Key was: \'", k, '\'')
 
 def load():
     """
