@@ -1,5 +1,6 @@
 import codecs
 import base64
+import re
 
 
 englishLetterFreq = {'E': 12.70, 'T': 9.06, 'A': 8.17, 'O': 7.51, 'I': 6.97, 'N': 6.75, 'S': 6.33, 'H': 6.09, 'R': 5.99,
@@ -53,12 +54,13 @@ def HexToASCIICheck(hex):
     TODO
     """
     try:
-        h = codecs.decode(hex, 'hex')
-        u = codecs.decode(h, 'utf-8')
+        _ = codecs.decode(codecs.decode(hex, 'hex'), 'utf-8')
         return True
-    except Exception as e:
+    except Exception:
         return False
 
+def baseX_to_binary(string, base, min_length):
+    return str(bin(int(string, base)))[2:].zfill(min_length)
 
 def hexxor(a, b):
     if len(a) != len(b):
@@ -150,3 +152,23 @@ def gen_key(string, key):
             looper += 1
 
     return total_key
+
+def split_into_bytes(string, number):
+
+    # Converts to hex
+    hex= rm_byte(base64_to_hex(string))
+    bytes=re.findall("..", hex)
+
+    # Adds padding if the lengths are not equal
+    while len(bytes) % number != 0:
+        bytes.append("00")
+
+    chunks=[]
+    for x in range(0, len(bytes), number):
+        chunk=""
+
+        for i in range(x, x + number):
+            chunk += bytes[i]
+        chunks.append(chunk)
+
+    return chunks

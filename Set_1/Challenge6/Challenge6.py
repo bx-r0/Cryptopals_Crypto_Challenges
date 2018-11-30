@@ -10,39 +10,7 @@ import Function
 import os
 import binascii
 
-
-
-
 KEY_SIZE_RANGE = range(1, 30)
-
-def breakSingleKey(transpose_byte):
-    frequency_lists = []
-
-    bestScore = None
-    bestKey = ""
-
-    # Works through all possible keys
-    for key in range(0, 255):
-
-        # XORs the key attempt with the transposed byte
-        key_attempt = format(key, '#04x')[2:] * round(len(transpose_byte) / 2)
-
-        xor = Function.hexxor(transpose_byte, key_attempt)
-
-        # Attepts a conversion to ascii, if that fails the key will be ignored
-        try:
-            output = Function.HexToASCII(xor)
-            
-            score = Function.score_distribution(output)
-            
-            if bestScore is None or bestScore > score:
-                bestScore = score
-                bestKey = chr(key)
-
-        except UnicodeDecodeError:
-            pass
-    
-    return bestKey
 
 def task6():
     DATA=load()
@@ -56,7 +24,7 @@ def task6():
         possible_key_size=key_pair[0]
 
         # Breaks the cipher into key size blocks
-        data_chunks=split_into_bytes(DATA, possible_key_size)
+        data_chunks=Function.split_into_bytes(DATA, possible_key_size)
 
         # Transposes all the bytes of the chunks
         transpose_chunks=transpose_bytes(data_chunks)
@@ -96,32 +64,33 @@ def task6():
     print(f"KEY: {best[1]}")
     print(f"TEXT: \n {best[2]}")
 
+def breakSingleKey(transpose_byte):
 
-def split_into_bytes(string, number):
+    bestScore = None
+    bestKey = ""
 
-    # Converts to hex
-    hex=Function.rm_byte(Function.base64_to_hex(string))
-    bytes=re.findall("..", hex)
+    # Works through all possible keys
+    for key in range(0, 255):
 
-    # Adds padding if the lengths are not equal
-    while len(bytes) % number != 0:
-        bytes.append("00")
+        # XORs the key attempt with the transposed byte
+        key_attempt = format(key, '#04x')[2:] * round(len(transpose_byte) / 2)
 
-    chunks=[]
-    for x in range(0, len(bytes), number):
-        chunk=""
+        xor = Function.hexxor(transpose_byte, key_attempt)
 
-        for i in range(x, x + number):
-            chunk += bytes[i]
-        chunks.append(chunk)
+        # Attepts a conversion to ascii, if that fails the key will be ignored
+        try:
+            output = Function.HexToASCII(xor)
+            
+            score = Function.score_distribution(output)
+            
+            if bestScore is None or bestScore > score:
+                bestScore = score
+                bestKey = chr(key)
 
-    return chunks
-
-
-def baseX_to_binary(string, base):
-    return bin(int(Function.ASCIIToHex(string), base))
-
-
+        except UnicodeDecodeError:
+            pass
+    
+    return bestKey
 
 def rank_possible_key_length(data):
     key_size_and_hamming=[]
@@ -130,7 +99,7 @@ def rank_possible_key_length(data):
     # And works out the possible key size
     for key_size in KEY_SIZE_RANGE:
         # BASE64 -> HEX conversion going on below
-        key_chunks=split_into_bytes(data, key_size)
+        key_chunks=Function.split_into_bytes(data, key_size)
 
         hamming_dist_normalised=(calculate_hamming_distance(
             key_chunks[0], key_chunks[1])) / key_size
@@ -139,11 +108,10 @@ def rank_possible_key_length(data):
 
     return key_size_and_hamming
 
-
 def calculate_hamming_distance(string1, string2):
     # Convert the strings to binary
-    binary1=baseX_to_binary(string1, 16)
-    binary2=baseX_to_binary(string2, 16)
+    binary1=bin(int(Function.ASCIIToHex(string1), 16))
+    binary2=bin(int(Function.ASCIIToHex(string2), 16))
 
     # Compares each binary value 1 for 1
     count=0
@@ -152,7 +120,6 @@ def calculate_hamming_distance(string1, string2):
             count += 1
 
     return count
-
 
 def transpose_bytes(data_chunks):
 
@@ -173,7 +140,6 @@ def transpose_bytes(data_chunks):
         transposed.append(byteString)
 
     return transposed
-
 
 def load():
     """
