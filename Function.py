@@ -235,32 +235,28 @@ class Encryption():
     class AES():
 
         @staticmethod
-        def ECB(encryptionFunc, key, data, blocksize=16):
-            cipher = AES.new(key, AES.MODE_ECB)
+        def ECB_Encrypt(cipher, data, blocksize=16):
+            func = lambda cipher, block: cipher.encrypt(base64.b64decode(block))
+            e = Encryption.AES.__ECB__(func, cipher, data, blocksize)
+            return base64.b64encode(e)
+
+        @staticmethod
+        def ECB_Decrypt(cipher, data, blocksize=16):
+            func = lambda cipher, block: cipher.decrypt(base64.b64decode(block))
+            return Encryption.AES.__ECB__(func, cipher, data, blocksize)
+        
+        @staticmethod
+        def __ECB__(encryptionFunc, cipher, data, blocksize=16):
             
             # Will split into blocks
             blocks = Encryption.split_base64_into_blocks(data, blocksize)
 
-            plaintext = []
+            plaintext = b""
             for block in blocks:
                 x = encryptionFunc(cipher, block)
-                plaintext.append(Conversion.remove_byte_notation(x))
+                plaintext += x
 
-            return "".join(plaintext)
-
-        @staticmethod    
-        def ECB_Encrypt(cipher, block):
-            # Grabs raw bytes
-            block = base64.b64decode(block)
-            c = cipher.encrypt(block)
-            return c
-
-        @staticmethod
-        def ECB_Decrypt(cipher, block):
-            # Grabs raw bytes
-            block = base64.b64decode(block)
-            c = cipher.decrypt(block)
-            return c
+            return plaintext
 
         @staticmethod
         def CBC_Encrypt(ivHex, key, data, blocksize=16):
@@ -277,12 +273,16 @@ class Encryption():
             for block in blocks:
                 blockHex = Conversion.remove_byte_notation(Base_64.base64_to_hex(block))
             
+                # TODO - Delete me
+                if len(previous) != len(blockHex):
+                    print()
+
                 # XORed with the previous
                 xor = XOR.hexxor(previous, blockHex)
                 xorB64 = Hex.hex_to_base64(xor)
 
                 # Encrypted
-                ct = Encryption.AES.ECB_Encrypt(cipher, xorB64)
+                ct = base64.b64decode(Encryption.AES.ECB_Encrypt(cipher, xorB64))
 
                 # Saved
                 cipherText += ct
@@ -312,6 +312,20 @@ class Encryption():
                 previous = Base_64.base64_to_hex(block)
 
             return "".join(plainText)
+
+        @staticmethod
+        def ECB_Detect(blocks):
+            """
+            Used to check for any repeating blocks.
+            This is a sign ECB is being used
+            """
+            seen = set()
+            for block in blocks:
+                if block in seen:
+                    return True
+                
+                seen.add(block)
+            return False
 
     @staticmethod
     def split_base64_into_blocks(string, number):

@@ -29,14 +29,13 @@ import base64
 
 key = "YELLOW SUBMARINE"
 
-def AES_ECB_Decrypt(key, data):
-    function = Function.Encryption.AES.ECB_Decrypt
-    return Function.Encryption.AES.ECB(function, key, data)
-
 def task7():
     # Reads in base64 data
     data = Function.File.LoadData(__file__)
-    e =  AES_ECB_Decrypt(key, data)
+
+    cipher = AES.new(key, AES.MODE_ECB)
+
+    e = Function.Encryption.AES.ECB_Decrypt(cipher, data)
     return e
 
 if __name__ == "__main__":

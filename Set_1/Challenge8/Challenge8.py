@@ -16,20 +16,6 @@ import Function
     the same 16 byte plaintext block will always produce the same 16 byte ciphertext.
 """
 
-def check_for_repeating_blocks(blocks):
-    """
-    Used to check for any repeating blocks.
-    This is a sign ECB is being used
-    """
-
-    seen = set()
-    for block in blocks:
-        if block in seen:
-            return True
-        
-        seen.add(block)
-
-
 def task8():
     data = Function.File.LoadLines(__file__)
 
@@ -42,7 +28,7 @@ def task8():
 
         blocks = Function.Encryption.split_base64_into_blocks(lineb64, 16)
 
-        if check_for_repeating_blocks(blocks):
+        if Function.Encryption.AES.ECB_Detect(blocks):
             ecb_candiates.append(line)
 
     return ecb_candiates

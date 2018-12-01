@@ -14,6 +14,7 @@ import Set_1.Challenge8.Challenge8 as c8
 # SET 2
 import Set_2.Challenge9.Challenge9 as c9
 import Set_2.Challenge10.Challenge10 as c10
+import Set_2.Challenge11.Challenge11 as c11
 
 
 def loadData(extra):
@@ -111,6 +112,16 @@ class C10(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+class C11(unittest.TestCase):
+
+    def test(self):
+
+        # Repeats the test
+        for _ in range(1000):
+
+            # Obtains the chosen mode, and the actual mode
+            expected, actual = c11.task11()
+            self.assertEqual(actual, expected)
 
 if __name__ == '__main__':
     unittest.main()
