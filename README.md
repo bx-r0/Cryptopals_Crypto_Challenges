@@ -7,8 +7,8 @@ https://cryptopals.com/
 - [X] ~~Single-byte XOR cipher~~
 - [X] ~~Detect single-character XOR~~
 - [X] ~~Implement repeating-key XOR~~
-- [ ] Break repeating-key XOR
-- [ ] AES in ECB mode
+- [X] ~~Break repeating-key XOR~~
+- [X] ~~AES in ECB mode~~
 - [ ] Detect AES in ECB mode
 
 # Set 2 - Block crypto

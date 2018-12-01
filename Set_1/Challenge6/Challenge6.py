@@ -2,11 +2,11 @@ import sys
 sys.path.insert(0, '../..')
 sys.path.insert(0, '../')
 sys.path.insert(0, './')
+import Function
 import codecs
 import collections
 import string
 import re
-import Function
 import os
 import binascii
 
@@ -24,7 +24,7 @@ def task6():
         possible_key_size=key_pair[0]
 
         # Breaks the cipher into key size blocks
-        data_chunks=Function.split_into_bytes(DATA, possible_key_size)
+        data_chunks=Function.Encryption.split_base64_into_blocks(DATA, possible_key_size)
 
         # Transposes all the bytes of the chunks
         transpose_chunks=transpose_bytes(data_chunks)
@@ -38,31 +38,29 @@ def task6():
         keys.append("".join(disovered_key))
 
 
-    dataHex = Function.base64_to_hex(DATA)
-    dataHex = Function.rm_byte(dataHex)
+    dataHex = Function.Base_64.base64_to_hex(DATA)
+    dataHex = Function.Conversion.remove_byte_notation(dataHex)
 
     # score, key, text
     best = (None, None, None)
 
     # Use keys to fully decrypt
     for key in keys:
-        keyHex = Function.ASCIIToHex(key)
-        keyHex = Function.rm_byte(keyHex)
+        keyHex = Function.UTF8.utf_to_hex(key)
+        keyHex = Function.Conversion.remove_byte_notation(keyHex)
 
-        fullLengthKey = Function.gen_key(dataHex, keyHex)
+        fullLengthKey = Function.Encryption.Vigenere.gen_key(dataHex, keyHex)
 
-        xor = Function.hexxor(dataHex, fullLengthKey)
+        xor = Function.XOR.hexxor(dataHex, fullLengthKey)
 
-        text = Function.HexToASCII(xor)
+        text = Function.Hex.hex_to_utf(xor)
 
-        score = Function.score_distribution(text)
+        score = Function.Statistical.score_distribution(text)
 
         if best[0] is None or score < best[0]:
             best = (score, key, text)
 
-    print("Best values:")
-    print(f"KEY: {best[1]}")
-    print(f"TEXT: \n {best[2]}")
+    return str(best[1])
 
 def breakSingleKey(transpose_byte):
 
@@ -75,13 +73,13 @@ def breakSingleKey(transpose_byte):
         # XORs the key attempt with the transposed byte
         key_attempt = format(key, '#04x')[2:] * round(len(transpose_byte) / 2)
 
-        xor = Function.hexxor(transpose_byte, key_attempt)
+        xor = Function.XOR.hexxor(transpose_byte, key_attempt)
 
         # Attepts a conversion to ascii, if that fails the key will be ignored
         try:
-            output = Function.HexToASCII(xor)
+            output = Function.Hex.hex_to_utf(xor)
             
-            score = Function.score_distribution(output)
+            score = Function.Statistical.score_distribution(output)
             
             if bestScore is None or bestScore > score:
                 bestScore = score
@@ -99,7 +97,7 @@ def rank_possible_key_length(data):
     # And works out the possible key size
     for key_size in KEY_SIZE_RANGE:
         # BASE64 -> HEX conversion going on below
-        key_chunks=Function.split_into_bytes(data, key_size)
+        key_chunks=Function.Encryption.split_base64_into_blocks(data, key_size)
 
         hamming_dist_normalised=(calculate_hamming_distance(
             key_chunks[0], key_chunks[1])) / key_size
@@ -109,9 +107,15 @@ def rank_possible_key_length(data):
     return key_size_and_hamming
 
 def calculate_hamming_distance(string1, string2):
+
+    hexString1 = Function.Base_64.base64_to_hex(string1)
+    hexString2 = Function.Base_64.base64_to_hex(string2)
+
     # Convert the strings to binary
-    binary1=bin(int(Function.ASCIIToHex(string1), 16))
-    binary2=bin(int(Function.ASCIIToHex(string2), 16))
+    binary1 = Function.Hex.hex_to_binary(int(hexString1, 16))
+    binary2 = Function.Hex.hex_to_binary(int(hexString2, 16))
+
+    binary1, binary2 = Function.make_binary_equal_length(binary1, binary2)
 
     # Compares each binary value 1 for 1
     count=0
@@ -122,6 +126,9 @@ def calculate_hamming_distance(string1, string2):
     return count
 
 def transpose_bytes(data_chunks):
+
+    # Converts to hex for easer manipulation
+    data_chunks = list(map(Function.Base_64.base64_to_hex, data_chunks))
 
     chunkLen=round(len(data_chunks[0]) / 2)
 
@@ -134,7 +141,7 @@ def transpose_bytes(data_chunks):
         byteString=""
 
         for chunk in data_chunks:
-            each_hex_byte=re.findall("..", chunk)
+            each_hex_byte=re.findall("..", Function.Conversion.remove_byte_notation(chunk))
             byteString += each_hex_byte[pos]
 
         transposed.append(byteString)
@@ -146,12 +153,14 @@ def load():
     Loads in the provided data for the challenge
     """
 
+    path = Function.getRealPath(__file__)
     data=""
-    with open(f"{os.path.realpath(__file__)[:63]}/data.txt") as file:
+    with open(f"{path}/data.txt") as file:
         lines=file.readlines()
 
     for x in lines:
         data += x
     return data
 
-task6()
+if __name__ == "__main__":
+    task6()

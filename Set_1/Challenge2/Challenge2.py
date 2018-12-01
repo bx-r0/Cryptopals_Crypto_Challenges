@@ -13,19 +13,12 @@ def task2():
     Output:
         - "746865206b696420646f6e277420706c6179"
     """
-    print('\n')
 
     input1 = "1c0111001f010100061a024b53535009181c"
-    print("# Input 1:")
-    print(input1, '\n')
-
     input2 = "686974207468652062756c6c277320657965"
-    print("# Input 2:")
-    print(input2, '\n')
-
     output = fXOR(input1, input2)
-    print("# Output: ")
-    print(output, '\n')
+
+    return output
 
     # Checks answer is valid
     if output == b"746865206b696420646f6e277420706c6179":
@@ -44,5 +37,5 @@ def fXOR(input1, input2):
     xored = bytes([a ^ b for a, b in zip(hex1, hex2)])
     return codecs.encode(xored, 'hex')
 
-
-task2()
+if __name__ == "__main__":
+    task2()

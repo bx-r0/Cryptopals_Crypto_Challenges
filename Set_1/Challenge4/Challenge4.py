@@ -3,6 +3,8 @@ import collections
 import re
 import sys
 import string
+sys.path.insert(0, './')
+sys.path.insert(0, '..')
 sys.path.insert(0, '../..')
 import Function
 
@@ -34,32 +36,24 @@ def task4():
         for char in common_characters:
 
             # The most common XORd with e will give the key
-            k = Function.strxor(most_common, char)
-            k = str(codecs.decode(k, 'utf-8'))
+            k = Function.XOR.hexxor(most_common, char)
 
             key = k * round(len(line) / 2)
-            answer = Function.strxor(line, key)
+            answer = Function.XOR.hexxor(line, key)
 
-            if Function.HexToASCIICheck(answer):
-                answer = Function.HexToASCII(answer)
+            if Function.Hex.hex_to_utf_check(answer):
+                answer = Function.Hex.hex_to_utf(answer)
 
                 if re.match('^[A-Za-z _.,!"\'$]*$', answer) is not None:
                     if all(c in string.printable for c in answer) and answer != "":
-                        print_poss(line, key, answer)
-
-
-def print_poss(line, key, answer):
-    print()
-    print("## Possibility ##")
-    print("Cipher:          ", line)
-    print("Key:             ", key)
-    print("Possible Answer: ", answer)
-    print()
-
+                        return k, answer
 
 def load():
-    file = open('data.txt')
+    path = Function.getRealPath(__file__)
+
+    file = open(f'{path}/data.txt')
     return file.readlines()
 
 
-task4()
+if __name__ == "__main__":
+    task4()
