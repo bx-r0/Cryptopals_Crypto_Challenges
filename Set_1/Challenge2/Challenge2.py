@@ -1,18 +1,18 @@
 import codecs
 
-
-def task2():
-    """
-    Fixed XOR:
+"""
+>>> Fixed XOR:
      Write a function that takes two equal-length buffers and produces their XOR combination.
 
     Input:
-        - "1c0111001f010100061a024b53535009181c"
-        - "686974207468652062756c6c277320657965"
+        >>> "1c0111001f010100061a024b53535009181c"
+        >>> "686974207468652062756c6c277320657965"
 
     Output:
-        - "746865206b696420646f6e277420706c6179"
+        >>> "746865206b696420646f6e277420706c6179"
     """
+
+def task2():
 
     input1 = "1c0111001f010100061a024b53535009181c"
     input2 = "686974207468652062756c6c277320657965"

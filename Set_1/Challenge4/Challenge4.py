@@ -8,6 +8,17 @@ sys.path.insert(0, '..')
 sys.path.insert(0, '../..')
 import Function
 
+"""
+>>> Detect single-character XOR
+
+    One of the 60-character strings in this file has been encrypted by single-character XOR.
+
+    Find it.
+
+    (Your code from #3 should help.) 
+"""
+
+
 # ETAOIN SHRDLU - Most common frequency of letters in the english langaug in order of frequency
 common_characters = []
 
@@ -17,7 +28,7 @@ def task4():
     One of the 60-character strings in this file has been encrypted by single-character XOR.
     """
 
-    input = load()
+    input = Function.File.LoadLines(__file__)
 
     # Adds all single character hex combinations for a key
     for x in range(0, 255):
@@ -47,13 +58,6 @@ def task4():
                 if re.match('^[A-Za-z _.,!"\'$]*$', answer) is not None:
                     if all(c in string.printable for c in answer) and answer != "":
                         return k, answer
-
-def load():
-    path = Function.getRealPath(__file__)
-
-    file = open(f'{path}/data.txt')
-    return file.readlines()
-
 
 if __name__ == "__main__":
     task4()

@@ -10,10 +10,14 @@ import re
 import os
 import binascii
 
+"""
+>>> Break repeating-key XOR
+"""
+
 KEY_SIZE_RANGE = range(1, 30)
 
 def task6():
-    DATA=load()
+    DATA=Function.File.LoadData(__file__)
 
     keys = []
 
@@ -148,19 +152,6 @@ def transpose_bytes(data_chunks):
 
     return transposed
 
-def load():
-    """
-    Loads in the provided data for the challenge
-    """
-
-    path = Function.getRealPath(__file__)
-    data=""
-    with open(f"{path}/data.txt") as file:
-        lines=file.readlines()
-
-    for x in lines:
-        data += x
-    return data
 
 if __name__ == "__main__":
     task6()

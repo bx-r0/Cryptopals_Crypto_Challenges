@@ -2,11 +2,47 @@ import codecs
 import base64
 import re
 import os
+from Crypto.Cipher import AES
 
 
 englishLetterFreq = {'E': 12.70, 'T': 9.06, 'A': 8.17, 'O': 7.51, 'I': 6.97, 'N': 6.75, 'S': 6.33, 'H': 6.09, 'R': 5.99,
                      'D': 4.25, 'L': 4.03, 'C': 2.78, 'U': 2.76, 'M': 2.41, 'W': 2.36, 'F': 2.23, 'G': 2.02, 'Y': 1.97,
                      'P': 1.93, 'B': 1.29, 'V': 0.98, 'K': 0.77, 'J': 0.15, 'X': 0.15, 'Q': 0.10, 'Z': 0.07}
+
+class File():
+
+    @staticmethod
+    def LoadLines(callingFile):
+        
+        filePath = File.getRealPath(callingFile) + "/data.txt"
+
+        with open(filePath, 'r') as file:
+            data = file.readlines()
+        
+        return data
+
+
+    @staticmethod
+    def LoadData(callingFile):
+        
+        filePath = File.getRealPath(callingFile) + "/data.txt"
+
+        with open(filePath, 'r') as file:
+            data = file.read()
+        
+        return data
+
+    @staticmethod
+    def getRealPath(file):
+        """
+        Gets raw path of the current script
+        """
+        path = os.path.realpath(file)
+
+        pathSections = path.split("/")
+        del pathSections[-1] # Deletes the file name
+
+        return "/".join(pathSections)
 
 class Conversion():
 
@@ -87,6 +123,13 @@ class UTF8():
         """
         b = codecs.encode(string, 'utf-8')
         return codecs.encode(b, 'hex')
+
+    @staticmethod
+    def utf_to_base64(string):
+        """
+        Converts an utf-8 string to a base64 string
+        """
+        return base64.b64encode(string)
 
 class XOR():
 
@@ -189,6 +232,87 @@ class Encryption():
 
             return total_key
 
+    class AES():
+
+        @staticmethod
+        def ECB(encryptionFunc, key, data, blocksize=16):
+            cipher = AES.new(key, AES.MODE_ECB)
+            
+            # Will split into blocks
+            blocks = Encryption.split_base64_into_blocks(data, blocksize)
+
+            plaintext = []
+            for block in blocks:
+                x = encryptionFunc(cipher, block)
+                plaintext.append(Conversion.remove_byte_notation(x))
+
+            return "".join(plaintext)
+
+        @staticmethod    
+        def ECB_Encrypt(cipher, block):
+            # Grabs raw bytes
+            block = base64.b64decode(block)
+            c = cipher.encrypt(block)
+            return c
+
+        @staticmethod
+        def ECB_Decrypt(cipher, block):
+            # Grabs raw bytes
+            block = base64.b64decode(block)
+            c = cipher.decrypt(block)
+            return c
+
+        @staticmethod
+        def CBC_Encrypt(ivHex, key, data, blocksize=16):
+            cipher = AES.new(key, AES.MODE_ECB)
+
+            data = UTF8.utf_to_base64(data.encode('utf-8'))
+
+            blocks = Encryption.split_base64_into_blocks(data, blocksize)
+            
+            # Initalisation
+            previous = ivHex
+            cipherText = b""
+
+            for block in blocks:
+                blockHex = Conversion.remove_byte_notation(Base_64.base64_to_hex(block))
+            
+                # XORed with the previous
+                xor = XOR.hexxor(previous, blockHex)
+                xorB64 = Hex.hex_to_base64(xor)
+
+                # Encrypted
+                ct = Encryption.AES.ECB_Encrypt(cipher, xorB64)
+
+                # Saved
+                cipherText += ct
+                previous = ct.hex()
+
+            return base64.b64encode(cipherText)
+
+        @staticmethod
+        def CBC_Decrypt(ivHex, key, data, blocksize=16):
+            cipher = AES.new(key, AES.MODE_ECB)
+            blocks = Encryption.split_base64_into_blocks(data, blocksize)
+            previous = ivHex
+            plainText = []
+
+            for block in blocks:
+                
+                # Decrypts the data
+                d = Encryption.AES.ECB_Decrypt(cipher, block)
+                
+                # Byte object to hex
+                dHex = d.hex()
+
+                pt = XOR.hexxor(previous, dHex)
+
+                plainText.append(Hex.hex_to_utf(pt))
+
+                previous = Base_64.base64_to_hex(block)
+
+            return "".join(plainText)
+
     @staticmethod
     def split_base64_into_blocks(string, number):
         """
@@ -213,18 +337,7 @@ class Encryption():
 
         return chunks
 
-
-def getRealPath(file):
-    """
-    Gets raw path of the current script
-    """
-    path = os.path.realpath(file)
-
-    pathSections = path.split("/")
-    del pathSections[-1] # Deletes the file name
-
-    return "/".join(pathSections)
-
+# TODO - Find a home
 def make_binary_equal_length(bin1, bin2):
     b1Len = len(bin1)
     b2Len = len(bin2)
