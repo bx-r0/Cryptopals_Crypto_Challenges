@@ -32,10 +32,8 @@ key = "YELLOW SUBMARINE"
 def task7():
     # Reads in base64 data
     data = Function.File.LoadData(__file__)
+    e = Function.Encryption.AES.ECB_Decrypt(key, data)
 
-    cipher = AES.new(key, AES.MODE_ECB)
-
-    e = Function.Encryption.AES.ECB_Decrypt(cipher, data)
     return e
 
 if __name__ == "__main__":

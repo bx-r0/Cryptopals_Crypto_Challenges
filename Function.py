@@ -235,13 +235,20 @@ class Encryption():
     class AES():
 
         @staticmethod
-        def ECB_Encrypt(cipher, data, blocksize=16):
+        def ECB_Encrypt(key, data, cipher=None, blocksize=16):
+
+            if cipher is None:
+                cipher = AES.new(key, AES.MODE_ECB)
+
             func = lambda cipher, block: cipher.encrypt(base64.b64decode(block))
             e = Encryption.AES.__ECB__(func, cipher, data, blocksize)
             return base64.b64encode(e)
 
         @staticmethod
-        def ECB_Decrypt(cipher, data, blocksize=16):
+        def ECB_Decrypt(key, data, cipher=None, blocksize=16):
+            if cipher is None:
+                cipher = AES.new(key, AES.MODE_ECB)
+
             func = lambda cipher, block: cipher.decrypt(base64.b64decode(block))
             return Encryption.AES.__ECB__(func, cipher, data, blocksize)
         
@@ -260,7 +267,6 @@ class Encryption():
 
         @staticmethod
         def CBC_Encrypt(ivHex, key, data, blocksize=16):
-            cipher = AES.new(key, AES.MODE_ECB)
 
             data = UTF8.utf_to_base64(data.encode('utf-8'))
 
@@ -282,7 +288,7 @@ class Encryption():
                 xorB64 = Hex.hex_to_base64(xor)
 
                 # Encrypted
-                ct = base64.b64decode(Encryption.AES.ECB_Encrypt(cipher, xorB64))
+                ct = base64.b64decode(Encryption.AES.ECB_Encrypt(key, xorB64))
 
                 # Saved
                 cipherText += ct
@@ -292,7 +298,6 @@ class Encryption():
 
         @staticmethod
         def CBC_Decrypt(ivHex, key, data, blocksize=16):
-            cipher = AES.new(key, AES.MODE_ECB)
             blocks = Encryption.split_base64_into_blocks(data, blocksize)
             previous = ivHex
             plainText = []
@@ -300,7 +305,7 @@ class Encryption():
             for block in blocks:
                 
                 # Decrypts the data
-                d = Encryption.AES.ECB_Decrypt(cipher, block)
+                d = Encryption.AES.ECB_Decrypt(key, block)
                 
                 # Byte object to hex
                 dHex = d.hex()

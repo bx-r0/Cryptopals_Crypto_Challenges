@@ -38,8 +38,7 @@ def ModeChoice():
         e = Function.Encryption.AES.CBC_Encrypt(iv, key, data)
         mode = "CBC"
     else:
-        cipher = AES.new(key, AES.MODE_ECB)
-        e = Function.Encryption.AES.ECB_Encrypt(cipher, data)
+        e = Function.Encryption.AES.ECB_Encrypt(key, data)
         mode = "ECB"
 
     return e, mode

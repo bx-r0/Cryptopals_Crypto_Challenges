@@ -1,5 +1,6 @@
 import os
 import unittest
+import base64
 
 # SET 1
 import Set_1.Challenge1.Challenge1 as c1
@@ -15,6 +16,7 @@ import Set_1.Challenge8.Challenge8 as c8
 import Set_2.Challenge9.Challenge9 as c9
 import Set_2.Challenge10.Challenge10 as c10
 import Set_2.Challenge11.Challenge11 as c11
+import Set_2.Challenge12.Challenge12 as c12
 
 
 def loadData(extra):
@@ -122,6 +124,17 @@ class C11(unittest.TestCase):
             # Obtains the chosen mode, and the actual mode
             expected, actual = c11.task11()
             self.assertEqual(actual, expected)
+
+class C12(unittest.TestCase):
+
+    def test(self):
+        expected = base64.b64decode(c12.appendString).decode('utf-8')
+        actual = c12.task12()
+
+        print(expected)
+        print(actual)
+
+        self.assertEqual(actual, expected)
 
 if __name__ == '__main__':
     unittest.main()
