@@ -11,7 +11,7 @@ from Crypto.Cipher import AES
 """
 
 # Random key - this shouldn't be viewable
-key = "VTEHVtncqe4HP86j"
+key = "M2Xmd7qkM31QFOKtwaHJbg=="
 
 # Added to the plain text before encryption
 appendString = "Um9sbGluJyBpbiBteSA1LjAKV2l0aCBteSByYWctdG9wIGRvd24gc28gbXkgaGFpciBjYW4gYmxvdwpUaGUgZ2lybGllcyBvbiBzdGFuZGJ5IHdhdmluZyBqdXN0IHRvIHNheSBoaQpEaWQgeW91IHN0b3A/IE5vLCBJIGp1c3QgZHJvdmUgYnkK"
@@ -26,7 +26,7 @@ def createEncryption(pt):
     data = base64.b64encode(pt + base64.b64decode(appendString))
 
     # Encrypts the data
-    e = Function.Encryption.AES.ECB_Encrypt(key, data)
+    e = Function.Encryption.AES.ECB_Encrypt(base64.b64decode(key), data)
 
     return e
 
@@ -63,7 +63,7 @@ def task12():
                 plainText = (b"A" * ptLen) + discoveredBytes + bytes([byteChoice])
 
                 # Encrpts and obtains the block
-                e = Function.Encryption.AES.ECB_Encrypt(key, base64.b64encode(plainText))
+                e = Function.Encryption.AES.ECB_Encrypt(base64.b64decode(key), base64.b64encode(plainText))
                 testBlocks = Function.Encryption.split_base64_into_blocks(e, 16)
 
                 # If the blocks match, we've found the value!

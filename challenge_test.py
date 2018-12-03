@@ -17,6 +17,8 @@ import Set_2.Challenge9.Challenge9 as c9
 import Set_2.Challenge10.Challenge10 as c10
 import Set_2.Challenge11.Challenge11 as c11
 import Set_2.Challenge12.Challenge12 as c12
+import Set_2.Challenge13.Challenge13 as c13
+import Set_2.Challenge14.Challenge14 as c14
 
 
 def loadData(extra):
@@ -131,8 +133,66 @@ class C12(unittest.TestCase):
         expected = base64.b64decode(c12.appendString).decode('utf-8')
         actual = c12.task12()
 
-        print(expected)
-        print(actual)
+        self.assertEqual(actual, expected)
+
+class C13(unittest.TestCase):
+
+    def test_decode(self):
+        testInput = "foo=bar&baz=qux&zap=zazzle"
+
+        expected = "{\n  foo: 'bar',\n  baz: 'qux',\n  zap: 'zazzle'\n}"
+        actual = c13.decode(testInput)
+
+        self.assertEqual(actual, expected)
+    
+    def test_encode(self):
+        testInput = "{\n  foo: 'bar',\n  baz: 'qux',\n  zap: 'zazzle'\n}"
+
+        expected = "foo=bar&baz=qux&zap=zazzle"
+        actual = c13.encode(testInput)
+
+        self.assertEqual(actual, expected)
+
+    def test_encode_decode(self):
+        testInput = "test=great&outcome=correct&time=wellspent&percentage=100"
+
+        expected = testInput
+        actual = c13.encode(c13.decode(testInput))
+
+        self.assertEqual(actual, expected)
+
+    def test_profile_gen(self):
+        
+        expected = "email=foo@bar.com&uid=10&role=user"
+        actual = c13.profile_for("foo@bar.com")
+
+        self.assertEqual(actual, expected)
+    
+    def test_profile_invalid(self):
+        with self.assertRaises(Exception) as context:
+            c13.profile_for("foo@bar.com&role=admin")
+
+        # Checks exeption message
+        self.assertEqual("Invalid email!", context.exception.args[0])
+        
+    def test_encrypt_decrypt(self):
+        expected = "test=great&outcome=correct&time=wellspent&percentage=100"
+        
+        # Super secret
+        key = b'gHEvzQiiVFtkppxjAKiweg=='
+        
+        e = c13.encrypt_user_profile(expected, key)
+        actual = c13.decrypt_user_profile(e, key)
+
+        self.assertEqual(actual, expected)
+
+
+class C14(unittest.TestCase):
+
+    def test(self):
+        # [2:-1] Is removing the b'' notation
+        expected = str(base64.b64decode(c14.target_bytes))[2:-1]
+        actual = c14.task14()
 
         self.assertEqual(actual, expected)
 

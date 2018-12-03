@@ -2,8 +2,12 @@ import codecs
 import base64
 import re
 import os
+import random
 from Crypto.Cipher import AES
 
+# TODO - Consistency needs to occur with the encryption keys, 
+#        the encryption keys need to be BYTES not base64 when 
+#        being entered into the PyCrypto AES
 
 englishLetterFreq = {'E': 12.70, 'T': 9.06, 'A': 8.17, 'O': 7.51, 'I': 6.97, 'N': 6.75, 'S': 6.33, 'H': 6.09, 'R': 5.99,
                      'D': 4.25, 'L': 4.03, 'C': 2.78, 'U': 2.76, 'M': 2.41, 'W': 2.36, 'F': 2.23, 'G': 2.02, 'Y': 1.97,
@@ -115,6 +119,15 @@ class Base_64():
         b = base64.b64decode(input)
         return Conversion.remove_byte_notation(b)
 
+    @staticmethod
+    def base64_concat(inputList):
+        
+        byteValues = b""
+        for x in inputList:
+            byteValues += base64.b64decode(x)
+
+        return base64.b64encode(byteValues)
+
 class UTF8():
     @staticmethod
     def utf_to_hex(string):
@@ -129,7 +142,7 @@ class UTF8():
         """
         Converts an utf-8 string to a base64 string
         """
-        return base64.b64encode(string)
+        return base64.b64encode(string.encode('utf-8'))
 
 class XOR():
 
@@ -215,7 +228,7 @@ class Encryption():
         def gen_key(string, key): 
             """
             Generates the repeating sequence of the Vigenere key
-            """
+                """
             length = len(string)
 
             total_key = ""
@@ -233,6 +246,22 @@ class Encryption():
             return total_key
 
     class AES():
+
+        @staticmethod
+        def Random_Key_Hex(blocksize=16):
+            """
+            Method used to generated a 'random' key
+            """
+            key = ""
+            for _ in range(blocksize):
+                key += hex(random.randint(0,255))[2:].zfill(2)
+
+            return key
+
+        @staticmethod
+        def Random_Key_Base64(blocksize=16):
+            k = Encryption.AES.Random_Key_Hex(blocksize)
+            return Hex.hex_to_base64(k)
 
         @staticmethod
         def ECB_Encrypt(key, data, cipher=None, blocksize=16):
@@ -268,7 +297,7 @@ class Encryption():
         @staticmethod
         def CBC_Encrypt(ivHex, key, data, blocksize=16):
 
-            data = UTF8.utf_to_base64(data.encode('utf-8'))
+            data = UTF8.utf_to_base64(data)
 
             blocks = Encryption.split_base64_into_blocks(data, blocksize)
             
@@ -332,6 +361,21 @@ class Encryption():
                 seen.add(block)
             return False
 
+        @staticmethod
+        def Generate_CipherText(email, key):
+            """
+            Method used to generate valid cipher text
+            """
+
+            data = Encryption.profile_for(email)
+
+            base64Profile = base64.b64encode(data.encode("utf-8"))
+            return Encryption.AES.ECB_Encrypt(base64.b64decode(key), base64Profile)
+
+    @staticmethod
+    def remove_padding(padding, string):
+        return string.replace(padding, "")
+
     @staticmethod
     def split_base64_into_blocks(string, number):
         """
@@ -356,6 +400,25 @@ class Encryption():
 
         return chunks
 
+    @staticmethod
+    def profile_for(email, admin=False):
+
+        r = re.match(r"^[^=&]+$", email)
+
+        if r is None:
+            raise(Exception("Invalid email!"))
+
+        uid = 10
+
+        if admin:
+            role = "admin"
+        else:
+            role = "user"
+
+        string = f"email={email}&uid={uid}&role={role}"
+
+        return string
+
 # TODO - Find a home
 def make_binary_equal_length(bin1, bin2):
     b1Len = len(bin1)
@@ -370,5 +433,3 @@ def make_binary_equal_length(bin1, bin2):
             bin1 = bin1.zfill(b2Len)
 
         return bin1, bin2
-
-
