@@ -10,16 +10,16 @@ import base64
 key = 'UWwj6bUR3BqgLULVODpzGA=='
 
 # Creates a target value - In this case NASA Admin cookie
-target_bytes = Function.UTF8.utf_to_base64(Function.Encryption.profile_for("admin@nasa.com"))
+target_bytes = Function.UTF8.base64(Function.Encryption.profileFor("admin@nasa.com"))
 
 # A random key can be used as a random string
-randomBytes = Function.Encryption.AES.Random_Key_Base64(random.randint(1, 100))
+randomBytes = Function.Encryption.AES.randomKeyBase64(random.randint(1, 100))
 
 def encryption(attackerControlled):
 
-    plainText = Function.Base_64.base64_concat([
+    plainText = Function.Base64_To.concat([
                 randomBytes, 
-                Function.UTF8.utf_to_base64(attackerControlled), 
+                Function.UTF8.base64(attackerControlled), 
                 target_bytes])
 
     e = Function.Encryption.AES.ECB_Encrypt(key, plainText)
@@ -54,7 +54,7 @@ def findOffset():
 
     while True:
         e = encryption("B" * offset +  "A" * 32)
-        blockList = Function.Encryption.split_base64_into_blocks(e, 16)
+        blockList = Function.Encryption.splitBase64IntoBlocks(e, 16)
 
         # Looks for two repeating blocks
         r = findRepeatingBlocks(blockList)
@@ -85,7 +85,7 @@ def task14():
     preComputedBlocks = []
     for length in range(0, 16):
         e = encryption("B" * offset + "A" * length)
-        preComputedBlocks.append(Function.Encryption.split_base64_into_blocks(e, 16))
+        preComputedBlocks.append(Function.Encryption.splitBase64IntoBlocks(e, 16))
 
     # Calulcates how many blocks of data the encryption produces
     numberOfBlocks = len(preComputedBlocks[0])
@@ -103,7 +103,7 @@ def task14():
             target = preComputedBlocks[AStringLength][targetBlockIndex]
             for i in range(0, 255):
                 e = encryption(chosenPlaintext + chr(i))
-                testBlocks = Function.Encryption.split_base64_into_blocks(e, 16)
+                testBlocks = Function.Encryption.splitBase64IntoBlocks(e, 16)
 
                 # If we have found the correct character!
                 if target == testBlocks[targetBlockIndex]:
@@ -111,7 +111,7 @@ def task14():
                     break
     
     result = "".join(discoveredChars)
-    result = Function.Encryption.remove_padding("\x00", result)
+    result = Function.Encryption.removePadding("\x00", result)
 
     return result
 

@@ -17,16 +17,16 @@ import Function
 """
 
 def task8():
-    data = Function.File.LoadLines(__file__)
+    data = Function.File.loadLines(__file__)
 
     ecb_candiates = []
     for line in data:
         # Removes new lines
         line = line.strip()
 
-        lineb64 = Function.Hex.hex_to_base64(line)
+        lineb64 = Function.HexTo.base64(line)
 
-        blocks = Function.Encryption.split_base64_into_blocks(lineb64, 16)
+        blocks = Function.Encryption.splitBase64IntoBlocks(lineb64, 16)
 
         if Function.Encryption.AES.ECB_Detect(blocks):
             ecb_candiates.append(line)

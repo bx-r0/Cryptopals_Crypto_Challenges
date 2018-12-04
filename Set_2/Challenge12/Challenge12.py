@@ -33,7 +33,7 @@ def createEncryption(pt):
 def task12():
 
     # Determines how many blocks the original data hass
-    noChosenPlaintextBlocks = Function.Encryption.split_base64_into_blocks(createEncryption(b""), 16)
+    noChosenPlaintextBlocks = Function.Encryption.splitBase64IntoBlocks(createEncryption(b""), 16)
 
     # Decrypted answer
     discoveredBytes = b""
@@ -43,7 +43,7 @@ def task12():
     preComputedBlocks = []
     for length in range(0, 16):
         e = createEncryption(b"A" * length)
-        preComputedBlocks.append(Function.Encryption.split_base64_into_blocks(e, 16))
+        preComputedBlocks.append(Function.Encryption.splitBase64IntoBlocks(e, 16))
 
     # Discovers all the blocks
     for x in range(0, len(noChosenPlaintextBlocks)):
@@ -64,7 +64,7 @@ def task12():
 
                 # Encrpts and obtains the block
                 e = Function.Encryption.AES.ECB_Encrypt(key, base64.b64encode(plainText))
-                testBlocks = Function.Encryption.split_base64_into_blocks(e, 16)
+                testBlocks = Function.Encryption.splitBase64IntoBlocks(e, 16)
 
                 # If the blocks match, we've found the value!
                 if testBlocks[x] == target:

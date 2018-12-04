@@ -26,7 +26,7 @@ import base64
 """
 
 def task10():
-    data = Function.File.LoadLines(__file__)
+    data = Function.File.loadLines(__file__)
     
     # Stips newlines 
     for line in data:
@@ -34,7 +34,7 @@ def task10():
 
     data = "".join(data)
 
-    iv = Function.Hex.hex_to_base64("00" * 16)
+    iv = Function.HexTo.base64("00" * 16)
     key = b"YELLOW SUBMARINE"
     keyB64 = base64.b64encode(key)
 

@@ -17,7 +17,7 @@ import binascii
 KEY_SIZE_RANGE = range(1, 30)
 
 def task6():
-    DATA=Function.File.LoadData(__file__)
+    DATA=Function.File.loadData(__file__)
 
     keys = []
 
@@ -28,7 +28,7 @@ def task6():
         possible_key_size=key_pair[0]
 
         # Breaks the cipher into key size blocks
-        data_chunks=Function.Encryption.split_base64_into_blocks(DATA, possible_key_size)
+        data_chunks=Function.Encryption.splitBase64IntoBlocks(DATA, possible_key_size)
 
         # Transposes all the bytes of the chunks
         transpose_chunks=transpose_bytes(data_chunks)
@@ -42,7 +42,7 @@ def task6():
         keys.append("".join(disovered_key))
 
 
-    dataHex = Function.Base_64.base64_to_hex(DATA)
+    dataHex = Function.Base64_To.hexadecimal(DATA)
     dataHex = Function.Conversion.remove_byte_notation(dataHex)
 
     # score, key, text
@@ -50,14 +50,14 @@ def task6():
 
     # Use keys to fully decrypt
     for key in keys:
-        keyHex = Function.UTF8.utf_to_hex(key)
+        keyHex = Function.UTF8.hexadecimal(key)
         keyHex = Function.Conversion.remove_byte_notation(keyHex)
 
         fullLengthKey = Function.Encryption.Vigenere.gen_key(dataHex, keyHex)
 
-        xor = Function.XOR.hexxor(dataHex, fullLengthKey)
+        xor = Function.XOR.hexXor(dataHex, fullLengthKey)
 
-        text = Function.Hex.hex_to_utf(xor)
+        text = Function.HexTo.utf8(xor)
 
         score = Function.Statistical.score_distribution(text)
 
@@ -77,11 +77,11 @@ def breakSingleKey(transpose_byte):
         # XORs the key attempt with the transposed byte
         key_attempt = format(key, '#04x')[2:] * round(len(transpose_byte) / 2)
 
-        xor = Function.XOR.hexxor(transpose_byte, key_attempt)
+        xor = Function.XOR.hexXor(transpose_byte, key_attempt)
 
         # Attepts a conversion to ascii, if that fails the key will be ignored
         try:
-            output = Function.Hex.hex_to_utf(xor)
+            output = Function.HexTo.utf8(xor)
             
             score = Function.Statistical.score_distribution(output)
             
@@ -101,7 +101,7 @@ def rank_possible_key_length(data):
     # And works out the possible key size
     for key_size in KEY_SIZE_RANGE:
         # BASE64 -> HEX conversion going on below
-        key_chunks=Function.Encryption.split_base64_into_blocks(data, key_size)
+        key_chunks=Function.Encryption.splitBase64IntoBlocks(data, key_size)
 
         hamming_dist_normalised=(calculate_hamming_distance(
             key_chunks[0], key_chunks[1])) / key_size
@@ -112,14 +112,14 @@ def rank_possible_key_length(data):
 
 def calculate_hamming_distance(string1, string2):
 
-    hexString1 = Function.Base_64.base64_to_hex(string1)
-    hexString2 = Function.Base_64.base64_to_hex(string2)
+    hexString1 = Function.Base64_To.hexadecimal(string1)
+    hexString2 = Function.Base64_To.hexadecimal(string2)
 
     # Convert the strings to binary
-    binary1 = Function.Hex.hex_to_binary(int(hexString1, 16))
-    binary2 = Function.Hex.hex_to_binary(int(hexString2, 16))
+    binary1 = Function.HexTo.binary(int(hexString1, 16))
+    binary2 = Function.HexTo.binary(int(hexString2, 16))
 
-    binary1, binary2 = Function.make_binary_equal_length(binary1, binary2)
+    binary1, binary2 = Function.makeBinaryEqualLength(binary1, binary2)
 
     # Compares each binary value 1 for 1
     count=0
@@ -132,7 +132,7 @@ def calculate_hamming_distance(string1, string2):
 def transpose_bytes(data_chunks):
 
     # Converts to hex for easer manipulation
-    data_chunks = list(map(Function.Base_64.base64_to_hex, data_chunks))
+    data_chunks = list(map(Function.Base64_To.hexadecimal, data_chunks))
 
     chunkLen=round(len(data_chunks[0]) / 2)
 

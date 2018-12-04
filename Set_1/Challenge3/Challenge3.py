@@ -35,15 +35,15 @@ def task3():
     for char in common_characters:
 
         # The most common XORd with e will give the key
-        hexChar = Function.Conversion.remove_byte_notation(Function.UTF8.utf_to_hex(char))
+        hexChar = Function.Conversion.remove_byte_notation(Function.UTF8.hexadecimal(char))
 
-        k = Function.XOR.hexxor(most_common, hexChar)
+        k = Function.XOR.hexXor(most_common, hexChar)
         print("Key tried: ", k)
 
         key = k * round(len(input) / 2)
 
-        answer = Function.XOR.hexxor(input, key)
-        answer = Function.Hex.hex_to_utf(answer)
+        answer = Function.XOR.hexXor(input, key)
+        answer = Function.HexTo.utf8(answer)
 
         # Regex to check string contains alphanumeric values and punctuation
         if re.match('^[A-Za-z _.,!"\'$]*$', answer) is not None:

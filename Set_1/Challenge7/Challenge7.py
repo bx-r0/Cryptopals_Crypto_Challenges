@@ -31,7 +31,7 @@ key = b"YELLOW SUBMARINE"
 
 def task7():
     # Reads in base64 data
-    data = Function.File.LoadData(__file__)
+    data = Function.File.loadData(__file__)
 
     keyB64 = base64.b64encode(key)
 

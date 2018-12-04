@@ -40,10 +40,10 @@ def task5():
 def encrypt(msg):
     k = Function.Encryption.Vigenere.gen_key(msg, key)
 
-    msgHex = Function.UTF8.utf_to_hex(msg)
-    keyHex = Function.UTF8.utf_to_hex(k)
+    msgHex = Function.UTF8.hexadecimal(msg)
+    keyHex = Function.UTF8.hexadecimal(k)
 
-    xor = Function.XOR.hexxor(msgHex, keyHex)
+    xor = Function.XOR.hexXor(msgHex, keyHex)
     
     # Removes the 0b
     return xor

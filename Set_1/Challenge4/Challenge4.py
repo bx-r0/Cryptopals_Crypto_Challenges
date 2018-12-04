@@ -28,7 +28,7 @@ def task4():
     One of the 60-character strings in this file has been encrypted by single-character XOR.
     """
 
-    input = Function.File.LoadLines(__file__)
+    input = Function.File.loadLines(__file__)
 
     # Adds all single character hex combinations for a key
     for x in range(0, 255):
@@ -47,13 +47,13 @@ def task4():
         for char in common_characters:
 
             # The most common XORd with e will give the key
-            k = Function.XOR.hexxor(most_common, char)
+            k = Function.XOR.hexXor(most_common, char)
 
             key = k * round(len(line) / 2)
-            answer = Function.XOR.hexxor(line, key)
+            answer = Function.XOR.hexXor(line, key)
 
-            if Function.Hex.hex_to_utf_check(answer):
-                answer = Function.Hex.hex_to_utf(answer)
+            if Function.HexTo.utf8_check(answer):
+                answer = Function.HexTo.utf8(answer)
 
                 if re.match('^[A-Za-z _.,!"\'$]*$', answer) is not None:
                     if all(c in string.printable for c in answer) and answer != "":

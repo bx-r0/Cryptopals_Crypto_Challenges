@@ -3,11 +3,9 @@ import base64
 import re
 import os
 import random
+import binascii
 from Crypto.Cipher import AES
 
-# TODO - Consistency needs to occur with the encryption keys, 
-#        the encryption keys need to be BYTES not base64 when 
-#        being entered into the PyCrypto AES
 
 englishLetterFreq = {'E': 12.70, 'T': 9.06, 'A': 8.17, 'O': 7.51, 'I': 6.97, 'N': 6.75, 'S': 6.33, 'H': 6.09, 'R': 5.99,
                      'D': 4.25, 'L': 4.03, 'C': 2.78, 'U': 2.76, 'M': 2.41, 'W': 2.36, 'F': 2.23, 'G': 2.02, 'Y': 1.97,
@@ -16,8 +14,11 @@ englishLetterFreq = {'E': 12.70, 'T': 9.06, 'A': 8.17, 'O': 7.51, 'I': 6.97, 'N'
 class File():
 
     @staticmethod
-    def LoadLines(callingFile):
-        
+    def loadLines(callingFile):
+        """
+        Loads all data from file as a list of lines
+        """
+
         filePath = File.getRealPath(callingFile) + "/data.txt"
 
         with open(filePath, 'r') as file:
@@ -25,9 +26,11 @@ class File():
         
         return data
 
-
     @staticmethod
-    def LoadData(callingFile):
+    def loadData(callingFile):
+        """
+        Loads all data from file as a single data chunk
+        """
         
         filePath = File.getRealPath(callingFile) + "/data.txt"
 
@@ -57,36 +60,42 @@ class Conversion():
         """
         return str(string)[2:-1]
 
-    @staticmethod
-    def baseX_to_binary(string, base, min_length):
-        return str(bin(int(string, base)))[2:].zfill(min_length)
-
-class Hex():
+class HexTo():
         @staticmethod
-        def hex_to_base64(input):
+        def base64(input):
             """
-            TODO
+            Hex --> Base64
             """
+
+            # Ensures the hex value has the correct number of digits
+            if len(input) % 2 is not 0:
+                input = "0" + input
+
+
             input_bytes = codecs.decode(input, 'hex')
             return base64.b64encode(input_bytes)
         
         @staticmethod
-        def hex_to_utf(hex):
+        def utf8(hex):
             """
-            Converts an hex string to a utf-8 string
+            Hex --> UTF-8
             """
 
             b = codecs.decode(hex, 'hex')
             return codecs.decode(b, 'utf-8')
         
         @staticmethod
-        def hex_to_binary(h):
-            return bin(h)[2:]
+        def binary(hex):
+            """
+            Binary --> Hex 
+            """
+
+            return bin(hex)[2:]
 
         @staticmethod
-        def hex_to_utf_check(hex):
+        def utf8_check(hex):
             """
-            TODO
+            Checks a hex value produces a valid UTF-8 string
             """
             try:
                 _ = codecs.decode(codecs.decode(hex, 'hex'), 'utf-8')
@@ -94,34 +103,45 @@ class Hex():
             except Exception:
                 return False
 
-class Base_64():
+class Base64_To():
     @staticmethod
-    def base64_to_hex(input):
+    def hexadecimal(input):
         """
-        TODO
+        Base64 --> Hex
         """
         bytes = base64.b64decode(input)
         hex = codecs.encode(bytes, 'hex')
         return hex
 
     @staticmethod
-    def base64_to_raw_bytes(input):
+    def rawBytes(input):
         """
         Decodes a base64 value
         """
         return base64.b64decode(input)
 
     @staticmethod
-    def base64_to_utf(input):
+    def utf8(input):
         """
-        Converts a base64 value into a utf-8 string
+        Base64 --> UTF-8
         """
         b = base64.b64decode(input)
         return b.decode('utf-8')
 
     @staticmethod
-    def base64_concat(inputList):
-        
+    def binary(input):
+        """
+        Base64 --> Binary
+        """
+
+        return bin(int(base64.b64decode(input).hex(), 16))[2:]
+
+    @staticmethod
+    def concat(inputList):
+        """
+        Combines a list of base64 values in a single value
+        """
+
         byteValues = b""
         for x in inputList:
             byteValues += base64.b64decode(x)
@@ -130,7 +150,7 @@ class Base_64():
 
 class UTF8():
     @staticmethod
-    def utf_to_hex(string):
+    def hexadecimal(string):
         """
         Converts an utf-8 string to a hex string
         """
@@ -138,7 +158,7 @@ class UTF8():
         return codecs.encode(b, 'hex')
 
     @staticmethod
-    def utf_to_base64(string):
+    def base64(string):
         """
         Converts an utf-8 string to a base64 string
         """
@@ -147,7 +167,11 @@ class UTF8():
 class XOR():
 
     @staticmethod
-    def b64xor(a, b):
+    def b64_Xor(a, b):
+        """
+        Produces an XOR Result of two equal length Base64 encoded values
+        """
+        
         bytesA = base64.b64decode(a)
         bytesB = base64.b64decode(b)
 
@@ -159,7 +183,11 @@ class XOR():
         return base64.b64encode(result)
 
     @staticmethod
-    def hexxor(a, b):
+    def hexXor(a, b):
+        """
+        Produces an XOR result of two equal length Hex values
+        """
+
         if len(a) != len(b):
             raise("Error: incorrect length in hexXor")
 
@@ -175,31 +203,18 @@ class XOR():
 
         return hexOutput
     
-    @staticmethod
-    def strxor(a, b):
-        """
-        XOR operation for two different strings.
-        This method also supports differing length strings
-        """
-        if len(a) > len(b):
-            return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a[:len(b)], b)])
-        else:
-            return "".join([chr(ord(x) ^ ord(y)) for (x, y) in zip(a, b[:len(a)])])
-
 class Statistical():
     
     @staticmethod
     def score_distribution(text):
         """
         Calculates a score for how close the distribution is to
-        english. Lower the better
-        :return:
+        english. The lower the score, the better
         """
 
         def create_distribution(text):
             """
             Creates the distrubution for a set of text
-            :return:
             """
 
             letterCount = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0, 'J': 0, 'K': 0,
@@ -240,7 +255,7 @@ class Encryption():
         def gen_key(string, key): 
             """
             Generates the repeating sequence of the Vigenere key
-                """
+            """
             length = len(string)
 
             total_key = ""
@@ -260,7 +275,7 @@ class Encryption():
     class AES():
 
         @staticmethod
-        def Random_Key_Hex(blocksize=16):
+        def randomKeyHex(blocksize=16):
             """
             Method used to generated a 'random' key
             """
@@ -271,14 +286,14 @@ class Encryption():
             return key
 
         @staticmethod
-        def Random_Key_Base64(blocksize=16):
-            k = Encryption.AES.Random_Key_Hex(blocksize)
-            return Hex.hex_to_base64(k)
+        def randomKeyBase64(blocksize=16):
+            k = Encryption.AES.randomKeyHex(blocksize)
+            return HexTo.base64(k)
 
         @staticmethod
         def ECB_Encrypt(key, data, cipher=None, blocksize=16):
             """
-            >>> All data must be base64
+            >>> All data must be base64 <<<
             Encrypts data under AES ECB mode
             """
 
@@ -295,7 +310,7 @@ class Encryption():
         @staticmethod
         def ECB_Decrypt(key, data, cipher=None, blocksize=16):
             """
-            >>> All data must be base64
+            >>> All data must be base64 <<<
             Decrypts data in AES ECB mode
             """
              # Converts key to bytes
@@ -310,9 +325,12 @@ class Encryption():
         
         @staticmethod
         def __ECB__(encryptionFunc, cipher, data, blocksize=16):
-            
+            """
+            PRIVATE - Call ECB_Encrypt or ECB_Decrypt instead
+            """
+
             # Will split into blocks
-            blocks = Encryption.split_base64_into_blocks(data, blocksize)
+            blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
 
             plaintext = b""
             for block in blocks:
@@ -324,11 +342,11 @@ class Encryption():
         @staticmethod
         def CBC_Encrypt(iv, key, data, blocksize=16):
             """
-            >>> All data must be Base64
+            >>> All data must be Base64 <<<
             Encrypts data in AES CBC mode
             """
 
-            blocks = Encryption.split_base64_into_blocks(data, blocksize)
+            blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
             
             # Initalisation
             previous = iv
@@ -337,7 +355,7 @@ class Encryption():
             for block in blocks:
             
                 # XORed with the previous
-                xor = XOR.b64xor(previous, block)
+                xor = XOR.b64_Xor(previous, block)
 
                 # Encrypted
                 ct = Encryption.AES.ECB_Encrypt(key, xor)
@@ -351,8 +369,12 @@ class Encryption():
 
         @staticmethod
         def CBC_Decrypt(iv, key, data, blocksize=16):
+            """
+            >>> All data must be Base64 <<<
+            Decrypts data encrypted using AES CBC mode            
+            """
 
-            blocks = Encryption.split_base64_into_blocks(data, blocksize)
+            blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
             previous = iv
             plainText = b""
 
@@ -361,7 +383,7 @@ class Encryption():
                 # Decrypts the data
                 d = Encryption.AES.ECB_Decrypt(key, block)
                 
-                pt = XOR.b64xor(previous, d)
+                pt = XOR.b64_Xor(previous, d)
 
                 plainText += base64.b64decode(pt)
 
@@ -384,12 +406,12 @@ class Encryption():
             return False
 
         @staticmethod
-        def Generate_CipherText(email, key):
+        def generateCipherText(email, key):
             """
             Method used to generate valid cipher text
             """
 
-            data = Encryption.profile_for(email)
+            data = Encryption.profileFor(email)
 
             base64Profile = base64.b64encode(data.encode("utf-8"))
             return Encryption.AES.ECB_Encrypt(key, base64Profile)
@@ -403,8 +425,9 @@ class Encryption():
         def isValid(string):
             """
             Validates valid PKCS7. If padding is valid it will return the stripped string
-            No padding will be determined valid.
             On invalid padding the method will throw an exception
+
+            Note: No padding will be determined valid.
             """
 
             padding = []
@@ -427,6 +450,9 @@ class Encryption():
 
         @staticmethod
         def add(blocksize, string):
+            """
+            Adds PKCS#7 padding to a provided string
+            """
 
             # Finds the next closest block
             targetBlockNumber = int(len(string) / blocksize) + 1
@@ -437,35 +463,42 @@ class Encryption():
             return string + "\x04" * difference
 
     @staticmethod
-    def remove_padding(padding, string):
+    def removePadding(padding, string):
+        """
+        Simple method designed to quickly remove padding from a strings
+        """
+
         return string.replace(padding, "")
 
     @staticmethod
-    def split_base64_into_blocks(string, number):
+    def splitBase64IntoBlocks(string, blocksize=16):
         """
         Takes a base64 string and returns a list of certain length blocks
         """
 
         # Converts to hex
-        hex= Conversion.remove_byte_notation(Base_64.base64_to_hex(string))
+        hex= Conversion.remove_byte_notation(Base64_To.hexadecimal(string))
         bytes=re.findall("..", hex)
 
         # Adds padding if the lengths are not equal
-        while len(bytes) % number != 0:
+        while len(bytes) % blocksize != 0:
             bytes.append("00")
 
         chunks=[]
-        for x in range(0, len(bytes), number):
+        for x in range(0, len(bytes), blocksize):
             chunk=""
 
-            for i in range(x, x + number):
+            for i in range(x, x + blocksize):
                 chunk += bytes[i]
-            chunks.append(Hex.hex_to_base64(chunk))
+            chunks.append(HexTo.base64(chunk))
 
         return chunks
 
     @staticmethod
-    def profile_for(email, admin=False):
+    def profileFor(email, admin=False):
+        """
+        Generates a user cookie for a provided email
+        """
 
         r = re.match(r"^[^=&]+$", email)
 
@@ -483,8 +516,11 @@ class Encryption():
 
         return string
 
-# TODO - Find a home
-def make_binary_equal_length(bin1, bin2):
+def makeBinaryEqualLength(bin1, bin2):
+    """
+    Makes sure two binary values are the same length
+    """
+
     b1Len = len(bin1)
     b2Len = len(bin2)
 

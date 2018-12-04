@@ -32,8 +32,8 @@ def ModeChoice():
     # 0 for ECB
     d = random.randint(0, 1)
 
-    key = Function.Encryption.AES.Random_Key_Base64()
-    iv = Function.Encryption.AES.Random_Key_Base64()
+    key = Function.Encryption.AES.randomKeyBase64()
+    iv = Function.Encryption.AES.randomKeyBase64()
 
     if d is 1:
         e = Function.Encryption.AES.CBC_Encrypt(iv, key, data)
@@ -46,7 +46,7 @@ def ModeChoice():
 
 def ECB_or_CBC(cipherText):
     # Split data into blocks
-    blocks = Function.Encryption.split_base64_into_blocks(cipherText, 16)
+    blocks = Function.Encryption.splitBase64IntoBlocks(cipherText, 16)
     ECB_Detected = Function.Encryption.AES.ECB_Detect(blocks)
 
     if ECB_Detected:
