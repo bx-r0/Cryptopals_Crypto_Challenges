@@ -117,7 +117,7 @@ class Base_64():
         Converts a base64 value into a utf-8 string
         """
         b = base64.b64decode(input)
-        return Conversion.remove_byte_notation(b)
+        return b.decode('utf-8')
 
     @staticmethod
     def base64_concat(inputList):
@@ -145,6 +145,18 @@ class UTF8():
         return base64.b64encode(string.encode('utf-8'))
 
 class XOR():
+
+    @staticmethod
+    def b64xor(a, b):
+        bytesA = base64.b64decode(a)
+        bytesB = base64.b64decode(b)
+
+        result = []
+        for b1, b2 in zip(bytesA, bytesB):
+            result.append(bytes([b1 ^ b2]))
+        
+        result = b"".join(result)
+        return base64.b64encode(result)
 
     @staticmethod
     def hexxor(a, b):
@@ -265,6 +277,13 @@ class Encryption():
 
         @staticmethod
         def ECB_Encrypt(key, data, cipher=None, blocksize=16):
+            """
+            >>> All data must be base64
+            Encrypts data under AES ECB mode
+            """
+
+             # Converts key to bytes
+            key = base64.b64decode(key)
 
             if cipher is None:
                 cipher = AES.new(key, AES.MODE_ECB)
@@ -275,11 +294,19 @@ class Encryption():
 
         @staticmethod
         def ECB_Decrypt(key, data, cipher=None, blocksize=16):
+            """
+            >>> All data must be base64
+            Decrypts data in AES ECB mode
+            """
+             # Converts key to bytes
+            key = base64.b64decode(key)
+
             if cipher is None:
                 cipher = AES.new(key, AES.MODE_ECB)
 
             func = lambda cipher, block: cipher.decrypt(base64.b64decode(block))
-            return Encryption.AES.__ECB__(func, cipher, data, blocksize)
+            e = Encryption.AES.__ECB__(func, cipher, data, blocksize)
+            return base64.b64encode(e)
         
         @staticmethod
         def __ECB__(encryptionFunc, cipher, data, blocksize=16):
@@ -295,57 +322,52 @@ class Encryption():
             return plaintext
 
         @staticmethod
-        def CBC_Encrypt(ivHex, key, data, blocksize=16):
-
-            data = UTF8.utf_to_base64(data)
+        def CBC_Encrypt(iv, key, data, blocksize=16):
+            """
+            >>> All data must be Base64
+            Encrypts data in AES CBC mode
+            """
 
             blocks = Encryption.split_base64_into_blocks(data, blocksize)
             
             # Initalisation
-            previous = ivHex
-            cipherText = b""
+            previous = iv
+            cipherText = []
 
             for block in blocks:
-                blockHex = Conversion.remove_byte_notation(Base_64.base64_to_hex(block))
             
-                # TODO - Delete me
-                if len(previous) != len(blockHex):
-                    print()
-
                 # XORed with the previous
-                xor = XOR.hexxor(previous, blockHex)
-                xorB64 = Hex.hex_to_base64(xor)
+                xor = XOR.b64xor(previous, block)
 
                 # Encrypted
-                ct = base64.b64decode(Encryption.AES.ECB_Encrypt(key, xorB64))
+                ct = Encryption.AES.ECB_Encrypt(key, xor)
 
                 # Saved
-                cipherText += ct
-                previous = ct.hex()
+                cipherText.append(base64.b64decode(ct))
+                previous = ct
 
+            cipherText = b"".join(cipherText)
             return base64.b64encode(cipherText)
 
         @staticmethod
-        def CBC_Decrypt(ivHex, key, data, blocksize=16):
+        def CBC_Decrypt(iv, key, data, blocksize=16):
+
             blocks = Encryption.split_base64_into_blocks(data, blocksize)
-            previous = ivHex
-            plainText = []
+            previous = iv
+            plainText = b""
 
             for block in blocks:
                 
                 # Decrypts the data
                 d = Encryption.AES.ECB_Decrypt(key, block)
                 
-                # Byte object to hex
-                dHex = d.hex()
+                pt = XOR.b64xor(previous, d)
 
-                pt = XOR.hexxor(previous, dHex)
+                plainText += base64.b64decode(pt)
 
-                plainText.append(Hex.hex_to_utf(pt))
+                previous = block
 
-                previous = Base_64.base64_to_hex(block)
-
-            return "".join(plainText)
+            return base64.b64encode(plainText)
 
         @staticmethod
         def ECB_Detect(blocks):
@@ -370,7 +392,49 @@ class Encryption():
             data = Encryption.profile_for(email)
 
             base64Profile = base64.b64encode(data.encode("utf-8"))
-            return Encryption.AES.ECB_Encrypt(base64.b64decode(key), base64Profile)
+            return Encryption.AES.ECB_Encrypt(key, base64Profile)
+
+    class PKCS7():
+
+        paddingChar = "\x04"
+        exceptionMessage = "Error: Invalid PKCS#7 padding"
+
+        @staticmethod
+        def isValid(string):
+            """
+            Validates valid PKCS7. If padding is valid it will return the stripped string
+            No padding will be determined valid.
+            On invalid padding the method will throw an exception
+            """
+
+            padding = []
+            for char in reversed(string):
+
+                # Should not having padding values that are higher than 16 in ascii
+                if ord(char) < 10:
+                    padding.append(char)
+
+            
+            # Checks if the whole padding is the target char
+            for pad in padding:
+                if pad != Encryption.PKCS7.paddingChar:
+                    raise(Exception(Encryption.PKCS7.exceptionMessage))
+
+            # Removes padding
+            string = string.replace(Encryption.PKCS7.paddingChar, "")
+
+            return string
+
+        @staticmethod
+        def add(blocksize, string):
+
+            # Finds the next closest block
+            targetBlockNumber = int(len(string) / blocksize) + 1
+
+            # Calculates how many characters are needed to get to the next block
+            difference = (blocksize * targetBlockNumber) - (len(string))
+
+            return string + "\x04" * difference
 
     @staticmethod
     def remove_padding(padding, string):

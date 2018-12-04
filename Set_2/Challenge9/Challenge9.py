@@ -1,3 +1,9 @@
+import sys
+sys.path.insert(0, '../..')
+sys.path.insert(0, '../')
+sys.path.insert(0, './')
+import Function
+
 """
 >>> Implement PKCS#7 padding
 
@@ -17,19 +23,10 @@
     padded to 20 bytes would be:
     >>> "YELLOW SUBMARINE\x04\x04\x04\x04"
 """
-def PKCS_7(blocksize, string):
-    if len(string) > blocksize:
-        print("Error: string is bigger than the block!")
-        return
-
-    difference = blocksize - len(string)
-
-    return string + "\x04" * difference
 
 def task9():
     inputStr = "YELLOW SUBMARINE"
-    return PKCS_7(20, inputStr)
-
+    return  Function.Encryption.PKCS7.add(20, inputStr)
 
 if __name__ == "__main__":
     task9()

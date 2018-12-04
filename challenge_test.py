@@ -19,7 +19,7 @@ import Set_2.Challenge11.Challenge11 as c11
 import Set_2.Challenge12.Challenge12 as c12
 import Set_2.Challenge13.Challenge13 as c13
 import Set_2.Challenge14.Challenge14 as c14
-
+import Set_2.Challenge15.Challenge15 as c15
 
 def loadData(extra):
     path = os.path.realpath(__file__)
@@ -195,6 +195,29 @@ class C14(unittest.TestCase):
         actual = c14.task14()
 
         self.assertEqual(actual, expected)
+
+
+class C15(unittest.TestCase):
+
+    def test(self):
+        s1 = "ICE ICE BABY\x04\x04\x04\x04" # Valid
+        s2 = "ICE ICE BABY"                 # Valid
+        s3 = "ICE ICE BABY\x05\x05\x05\x05" # Invalid
+        s4 = "ICE ICE BABY\x01\x02\x03\x04" # Invalid
+
+        exceptionMsg = c15.exceptionMessage
+
+        self.assertEqual(c15.validPKCS7(s1), "ICE ICE BABY")
+        self.assertEqual(c15.validPKCS7(s2), "ICE ICE BABY")
+
+        with self.assertRaises(Exception) as context:
+            c15.validPKCS7(s3)
+        self.assertEqual(exceptionMsg, context.exception.args[0])
+
+        with self.assertRaises(Exception) as context:
+            c15.validPKCS7(s4)
+        self.assertEqual(exceptionMsg, context.exception.args[0])
+        
 
 if __name__ == '__main__':
     unittest.main()

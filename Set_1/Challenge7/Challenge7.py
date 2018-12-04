@@ -27,12 +27,15 @@ import base64
 
 """
 
-key = "YELLOW SUBMARINE"
+key = b"YELLOW SUBMARINE"
 
 def task7():
     # Reads in base64 data
     data = Function.File.LoadData(__file__)
-    e = Function.Encryption.AES.ECB_Decrypt(key, data)
+
+    keyB64 = base64.b64encode(key)
+
+    e = Function.Encryption.AES.ECB_Decrypt(keyB64, data)
 
     return e
 

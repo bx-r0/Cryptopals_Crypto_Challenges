@@ -34,13 +34,14 @@ def task10():
 
     data = "".join(data)
 
-    iv = "00" * 16
-    key = "YELLOW SUBMARINE"
+    iv = Function.Hex.hex_to_base64("00" * 16)
+    key = b"YELLOW SUBMARINE"
+    keyB64 = base64.b64encode(key)
 
     # Checks decryption and encryption
-    plainText = Function.Encryption.AES.CBC_Decrypt(iv, key, data)
-    cipherText = Function.Encryption.AES.CBC_Encrypt(iv, key, plainText)
-    
+    plainText = Function.Encryption.AES.CBC_Decrypt(iv, keyB64, data)
+    cipherText = Function.Encryption.AES.CBC_Encrypt(iv, keyB64, plainText)
+
     return cipherText
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@ sys.path.insert(0, '../')
 sys.path.insert(0, './')
 import Function
 from Crypto.Cipher import AES
+import base64
 
 """
 >>> An ECB/CBC ECB_Detectedion oracle
@@ -31,8 +32,8 @@ def ModeChoice():
     # 0 for ECB
     d = random.randint(0, 1)
 
-    key = gen_random_key_or_iv(16)
-    iv = gen_random_key_or_iv(16)
+    key = Function.Encryption.AES.Random_Key_Base64()
+    iv = Function.Encryption.AES.Random_Key_Base64()
 
     if d is 1:
         e = Function.Encryption.AES.CBC_Encrypt(iv, key, data)

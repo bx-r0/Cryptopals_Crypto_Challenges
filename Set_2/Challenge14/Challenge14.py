@@ -22,7 +22,7 @@ def encryption(attackerControlled):
                 Function.UTF8.utf_to_base64(attackerControlled), 
                 target_bytes])
 
-    e = Function.Encryption.AES.ECB_Encrypt(base64.b64decode(key), plainText)
+    e = Function.Encryption.AES.ECB_Encrypt(key, plainText)
     return e
 
 def findRepeatingBlocks(blockList):

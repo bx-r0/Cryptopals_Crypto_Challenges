@@ -18,7 +18,7 @@ https://cryptopals.com/
 - [X] ~~Byte-at-a-time ECB decryption (Simple)~~
 - [X] ~~ECB cut-and-paste~~
 - [X] ~~Byte-at-a-time ECB decryption (Harder)~~
-- [ ] PKCS#7 padding validation
+- [X] ~~PKCS#7 padding validation~~
 - [ ] CBC bitflipping attacks
 
 # Set 3 - Block & stream crypto
