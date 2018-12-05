@@ -32,7 +32,7 @@ def createString(userData):
     print(f"Original Plaintext:\n{string}")
 
     # Adds padding and returns
-    plaintext = Function.Encryption.PKCS7.add(16, string)
+    plaintext = Function.Encryption.PKCS7.add(string)
 
     # Encodes to base64 and returns
     return base64.b64encode(plaintext.encode('utf-8'))

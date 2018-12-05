@@ -418,9 +418,6 @@ class Encryption():
 
     class PKCS7():
 
-        # TODO - Reduce repeated code here!
-
-        paddingChar = "\x04"
         exceptionMessage = "Error: Invalid PKCS#7 padding"
 
         @staticmethod
@@ -428,31 +425,20 @@ class Encryption():
             """
             Validates valid PKCS7. If padding is valid it will return the stripped string
             On invalid padding the method will throw an exception
-
-            Note: No padding will be determined valid.
             """
 
-            padding = []
-            for char in reversed(string):
+            paddingLength = string[-1]
+            paddingValue = ord(paddingLength)
 
-                # Should not having padding values that are higher than 16 in ascii
-                if ord(char) < 10:
-                    padding.append(char)
-                
-                # Padding has ended
-                else:
-                    break
+            # Grabs the padding
+            padding = string[len(string) - paddingValue:]
 
-            
-            # Checks if the whole padding is the target char
             for pad in padding:
-                if pad != Encryption.PKCS7.paddingChar:
-                    raise(Exception(Encryption.PKCS7.exceptionMessage))
+                if ord(pad) != paddingValue:
+                    raise(Exception())
 
-            # Removes padding
-            string = string.replace(Encryption.PKCS7.paddingChar, "")
-
-            return string
+            # Stips the padding
+            return string[:len(string) - paddingValue]
 
         @staticmethod
         def isValidBool(string):
@@ -465,49 +451,52 @@ class Encryption():
                 return False
 
         @staticmethod
-        def isValidBase64Bool(string):
-            paddingB64 = base64.b64encode(Encryption.PKCS7.paddingChar.encode('utf-8'))
+        def isValidBase64(base64String):
+            """
+            Validates PKCS#7 padding for a base64 encoded value
+            """
 
-            byteList = Encryption.splitBase64IntoBlocks(string, 1)
+            base64Bytes = Encryption.splitBase64IntoBlocks(base64String, blocksize=1)
 
-            padding = []
-            for byte in reversed(byteList):
-                char = ord(base64.b64decode(byte).decode('utf-8'))
+            paddingLength = ord(base64.b64decode(base64Bytes[-1]))
 
-                if char < 10:
-                    padding.append(byte)
-                else:
-                    break
+            padding = base64Bytes[len(base64Bytes) - paddingLength:]
 
-
-            # Checks if the whole padding is the target char
+            # # Checks for a correct final byte
+            # if paddingLength < 1 or paddingLength > 16:
+            #     raise(Exception("Error: Invalid padding - Final byte was invalid"))
+            
+            # Checks the pad for the same value
             for pad in padding:
-                if pad != paddingB64:
-                    return False
+                if ord(base64.b64decode(pad)) != paddingLength:
+                    raise(Exception("Error: Invalid padding - Padding is not formed correctly"))
 
-            return True
+            # Returns the string without the padding
+            return Base64_To.concat(base64Bytes[:len(base64Bytes) - paddingLength])
 
-
-
-        # TODO- Add blocksize as a default of 16
         @staticmethod
-        def add(blocksize, string):
+        def isValidBase64Bool(base64String):
+            try:
+                Encryption.PKCS7.isValidBase64(base64String)
+                return True
+
+            # If an exception is thrown, padding is invalid
+            except:
+                return False
+
+        @staticmethod
+        def add(string, blocksize=16):
             """
             Adds PKCS#7 padding to a provided string
             """
 
-            # No padding needed
-            if len(string) % blocksize == 0:
-                return string
-            else:
+            # Finds the next closest block
+            targetBlockNumber = int(len(string) / blocksize) + 1
 
-                # Finds the next closest block
-                targetBlockNumber = int(len(string) / blocksize) + 1
+            # Calculates how many characters are needed to get to the next block
+            difference = (blocksize * targetBlockNumber) - (len(string))
 
-                # Calculates how many characters are needed to get to the next block
-                difference = (blocksize * targetBlockNumber) - (len(string))
-
-                return string + "\x04" * difference
+            return string + chr(difference) * difference
 
         @staticmethod
         def addBase64(string, blocksize=16):
@@ -515,30 +504,29 @@ class Encryption():
             Adds padding to a base64 string
             """
 
-            paddingB64 = base64.b64encode(Encryption.PKCS7.paddingChar.encode('utf-8'))
+            def addPadding(number, string):
+                """
+                Adds padding specified by the number to the string
+                """
 
-            # TODO - Way to count bytes in a base64 string without converting it?
-            # Converts to hex to check for the number of bytes
-            stringHex = Base64_To.hexadecimal(string)
-            numberOfBytes = round(len(stringHex) / 2)
+                paddingAndString = [string]
 
-            # No padding needed
-            if numberOfBytes % blocksize == 0:
-                return string
+                # Adds the padding values acording to the specification
+                paddingAndString += [base64.b64encode(chr(number).encode('utf-8'))] * number
 
-            else:
-                # Finds the next closest block
-                targetBlockNumber = int(numberOfBytes / blocksize) + 1
+                # Creates one base64 value
+                return Base64_To.concat(paddingAndString)
+ 
+            numberOfBytes = len(Encryption.splitBase64IntoBlocks(string, 1))
 
-                # Calculates how many characters are needed to get to the next block
-                difference = (blocksize * targetBlockNumber) - numberOfBytes
+            # Finds the next closest block
+            targetBlockNumber = int(numberOfBytes / blocksize) + 1
 
-                toAdd = [string.strip()]
-                toAdd += [paddingB64] * difference
-                value = Base64_To.concat(toAdd)
+            # Calculates how many characters are needed to get to the next block
+            difference = (blocksize * targetBlockNumber) - numberOfBytes
 
-                return value
-
+            return addPadding(difference, string)
+   
     @staticmethod
     def removePadding(padding, string):
         """
