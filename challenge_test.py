@@ -20,6 +20,11 @@ import Set_2.Challenge12.Challenge12 as c12
 import Set_2.Challenge13.Challenge13 as c13
 import Set_2.Challenge14.Challenge14 as c14
 import Set_2.Challenge15.Challenge15 as c15
+import Set_2.Challenge16.Challenge16 as c16
+
+# SET 3
+import Set_3.Challenge17.Challenge17 as c17
+
 
 def loadData(extra):
     path = os.path.realpath(__file__)
@@ -218,6 +223,16 @@ class C15(unittest.TestCase):
             c15.validPKCS7(s4)
         self.assertEqual(exceptionMsg, context.exception.args[0])
         
+class C16(unittest.TestCase):
+
+    def test(self):
+        self.assertEqual(c16.task16(), True)
+
+class C17(unittest.TestCase):
+    #TODO - Test for challenge 17
+
+    def test(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()

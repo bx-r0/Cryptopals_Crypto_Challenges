@@ -99,10 +99,12 @@ def task16():
 
     # If the encrypted text contains our ";admin=true;" string we have access
     if decrypt_and_admin_search(key, cipherText):
-        return (COLOURS.GREEN + "Access granted!" + COLOURS.RESET)
+        print(COLOURS.GREEN + "Access granted!" + COLOURS.RESET)
+        return True
     else:
-        return (COLOURS.RED + "Access denied!" + COLOURS.RESET)
+        print(COLOURS.RED + "Access denied!" + COLOURS.RESET)
+        return False
 
 if __name__ == "__main__":
-    output = task16()
-    print(output)
+    task16()
+    
