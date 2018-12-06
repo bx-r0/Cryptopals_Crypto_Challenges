@@ -289,122 +289,7 @@ class Encryption():
         def randomKeyBase64(blocksize=16):
             k = Encryption.AES.randomKeyHex(blocksize)
             return HexTo.base64(k)
-
-        @staticmethod
-        def ECB_Encrypt(key, data, cipher=None, blocksize=16):
-            """
-            >>> All data must be base64 <<<
-            Encrypts data under AES ECB mode
-            """
-
-             # Converts key to bytes
-            key = base64.b64decode(key)
-
-            if cipher is None:
-                cipher = AES.new(key, AES.MODE_ECB)
-
-            func = lambda cipher, block: cipher.encrypt(base64.b64decode(block))
-            e = Encryption.AES.__ECB__(func, cipher, data, blocksize)
-            return base64.b64encode(e)
-
-        @staticmethod
-        def ECB_Decrypt(key, data, cipher=None, blocksize=16):
-            """
-            >>> All data must be base64 <<<
-            Decrypts data in AES ECB mode
-            """
-             # Converts key to bytes
-            key = base64.b64decode(key)
-
-            if cipher is None:
-                cipher = AES.new(key, AES.MODE_ECB)
-
-            func = lambda cipher, block: cipher.decrypt(base64.b64decode(block))
-            e = Encryption.AES.__ECB__(func, cipher, data, blocksize)
-            return base64.b64encode(e)
         
-        @staticmethod
-        def __ECB__(encryptionFunc, cipher, data, blocksize=16):
-            """
-            PRIVATE - Call ECB_Encrypt or ECB_Decrypt instead
-            """
-
-            # Will split into blocks
-            blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
-
-            plaintext = b""
-            for block in blocks:
-                x = encryptionFunc(cipher, block)
-                plaintext += x
-
-            return plaintext
-
-        @staticmethod
-        def CBC_Encrypt(iv, key, data, blocksize=16):
-            """
-            >>> All data must be Base64 <<<
-            Encrypts data in AES CBC mode
-            """
-
-            blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
-            
-            # Initalisation
-            previous = iv
-            cipherText = []
-
-            for block in blocks:
-            
-                # XORed with the previous
-                xor = XOR.b64_Xor(previous, block)
-
-                # Encrypted
-                ct = Encryption.AES.ECB_Encrypt(key, xor)
-
-                # Saved
-                cipherText.append(base64.b64decode(ct))
-                previous = ct
-
-            cipherText = b"".join(cipherText)
-            return base64.b64encode(cipherText)
-
-        @staticmethod
-        def CBC_Decrypt(iv, key, data, blocksize=16):
-            """
-            >>> All data must be Base64 <<<
-            Decrypts data encrypted using AES CBC mode            
-            """
-
-            blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
-            previous = iv
-            plainText = b""
-
-            for block in blocks:
-                
-                # Decrypts the data
-                d = Encryption.AES.ECB_Decrypt(key, block)
-                
-                pt = XOR.b64_Xor(previous, d)
-
-                plainText += base64.b64decode(pt)
-
-                previous = block
-
-            return base64.b64encode(plainText)
-
-        @staticmethod
-        def ECB_Detect(blocks):
-            """
-            Used to check for any repeating blocks.
-            This is a sign ECB is being used
-            """
-            seen = set()
-            for block in blocks:
-                if block in seen:
-                    return True
-                
-                seen.add(block)
-            return False
-
         @staticmethod
         def generateCipherText(email, key):
             """
@@ -414,7 +299,159 @@ class Encryption():
             data = Encryption.profileFor(email)
 
             base64Profile = base64.b64encode(data.encode("utf-8"))
-            return Encryption.AES.ECB_Encrypt(key, base64Profile)
+            return Encryption.AES.ECB.Encrypt(key, base64Profile)
+
+        class ECB():
+
+            @staticmethod
+            def Encrypt(key, data, blocksize=16):
+                """
+                >>> All data must be base64 <<<
+                Encrypts data under AES ECB mode
+                """
+
+                # Converts key to bytes
+                key = base64.b64decode(key)
+                
+                cipher = AES.new(key, AES.MODE_ECB)
+
+                func = lambda cipher, block: cipher.encrypt(base64.b64decode(block))
+                e = Encryption.AES.ECB.__ECB__(func, cipher, data, blocksize)
+                return base64.b64encode(e)
+
+            @staticmethod
+            def Decrypt(key, data, blocksize=16):
+                """
+                >>> All data must be base64 <<<
+                Decrypts data in AES ECB mode
+                """
+                # Converts key to bytes
+                key = base64.b64decode(key)
+
+                cipher = AES.new(key, AES.MODE_ECB)
+
+                func = lambda cipher, block: cipher.decrypt(base64.b64decode(block))
+                e = Encryption.AES.ECB.__ECB__(func, cipher, data, blocksize)
+                return base64.b64encode(e)
+
+            @staticmethod
+            def Detect(blocks):
+                """
+                Used to check for any repeating blocks.
+                This is a sign ECB is being used
+                """
+                seen = set()
+                for block in blocks:
+                    if block in seen:
+                        return True
+                    
+                    seen.add(block)
+                return False
+
+            @staticmethod
+            def __ECB__(encryptionFunc, cipher, data, blocksize=16):
+                """
+                PRIVATE - Call ECB_Encrypt or ECB_Decrypt instead.
+                Designed to be a generic function
+                """
+
+                # Will split into blocks
+                blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
+
+                plaintext = b""
+                for block in blocks:
+                    x = encryptionFunc(cipher, block)
+                    plaintext += x
+
+                return plaintext
+
+        class CBC():
+
+            @staticmethod
+            def Encrypt(iv, key, data, blocksize=16):
+                """
+                >>> All data must be Base64 <<<
+                Encrypts data in AES CBC mode
+                """
+
+                blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
+                
+                # Initalisation
+                previous = iv
+                cipherText = []
+
+                for block in blocks:
+                
+                    # XORed with the previous
+                    xor = XOR.b64_Xor(previous, block)
+
+                    # Encrypted
+                    ct = Encryption.AES.ECB.Encrypt(key, xor)
+
+                    # Saved
+                    cipherText.append(base64.b64decode(ct))
+                    previous = ct
+
+                cipherText = b"".join(cipherText)
+                return base64.b64encode(cipherText)
+
+            @staticmethod
+            def Decrypt(iv, key, data, blocksize=16):
+                """
+                >>> All data must be Base64 <<<
+                Decrypts data encrypted using AES CBC mode            
+                """
+
+                blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
+                previous = iv
+                plainText = b""
+
+                for block in blocks:
+                    
+                    # Decrypts the data
+                    d = Encryption.AES.ECB.Decrypt(key, block)
+                    
+                    pt = XOR.b64_Xor(previous, d)
+
+                    plainText += base64.b64decode(pt)
+
+                    previous = block
+
+                return base64.b64encode(plainText)
+
+        class CTR():
+            
+            @staticmethod
+            def Encrypt_Decrypt(nonce, key, data, blocksize=16):
+                """
+                CTR Uses the same function to decrypt and encrypt, therefore, the
+                same method can be used
+                """
+
+                # Little endian is used for the nonce and counter
+                byteorder = "little"
+
+                counter = 0
+                cipherText = []
+
+                nonceBytes = nonce.to_bytes(8, byteorder=byteorder)
+                plainTextBlocks = Encryption.splitBase64IntoBlocks(data)
+
+                for plainTextBlock in plainTextBlocks:
+                    counterBytes = counter.to_bytes(8, byteorder=byteorder)
+                    inputData = nonceBytes + counterBytes
+
+                    # Encrypt
+                    e = Encryption.AES.ECB.Encrypt(key, base64.b64encode(inputData))
+
+                    ct = XOR.b64_Xor(e, plainTextBlock)
+
+                    cipherText.append(ct)
+
+                    counter += 1
+                
+                return Base64_To.concat(cipherText)
+       
 
     class PKCS7():
 

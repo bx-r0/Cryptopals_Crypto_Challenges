@@ -141,10 +141,10 @@ def profile_for(email, admin=False):
 
 def encrypt_user_profile(user_profile, key):
     base64Profile = base64.b64encode(user_profile.encode("utf-8"))
-    return Function.Encryption.AES.ECB_Encrypt(key, base64Profile)
+    return Function.Encryption.AES.ECB.Encrypt(key, base64Profile)
 
 def decrypt_user_profile(encryptionDataBase64, key):
-    d = Function.Encryption.AES.ECB_Decrypt(key, encryptionDataBase64)
+    d = Function.Encryption.AES.ECB.Decrypt(key, encryptionDataBase64)
     d = base64.b64decode(d)
     d = Function.Conversion.remove_byte_notation(d)
     

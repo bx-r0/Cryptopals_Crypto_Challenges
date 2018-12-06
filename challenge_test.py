@@ -24,6 +24,7 @@ import Set_2.Challenge16.Challenge16 as c16
 
 # SET 3
 import Set_3.Challenge17.Challenge17 as c17
+import Set_3.Challenge18.Challenge18 as c18
 
 
 def loadData(extra):
@@ -265,6 +266,18 @@ class C17(unittest.TestCase):
             lineIndex += 1
 
         pass
+
+class C18(unittest.TestCase):
+
+    def test(self):
+        
+        # Full block of data
+        expected = c18.dataText
+
+        actual = c18.task18()
+
+        self.assertEqual(actual, expected)
+
 
 if __name__ == '__main__':
     unittest.main()

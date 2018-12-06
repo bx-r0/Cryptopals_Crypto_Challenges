@@ -28,7 +28,7 @@ def task8():
 
         blocks = Function.Encryption.splitBase64IntoBlocks(lineb64, 16)
 
-        if Function.Encryption.AES.ECB_Detect(blocks):
+        if Function.Encryption.AES.ECB.Detect(blocks):
             ecb_candiates.append(line)
 
     return ecb_candiates

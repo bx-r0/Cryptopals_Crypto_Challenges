@@ -35,7 +35,7 @@ def task7():
 
     keyB64 = base64.b64encode(key)
 
-    e = Function.Encryption.AES.ECB_Decrypt(keyB64, data)
+    e = Function.Encryption.AES.ECB.Decrypt(keyB64, data)
 
     return e
 

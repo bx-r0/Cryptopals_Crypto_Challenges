@@ -38,7 +38,7 @@ def createString(userData):
     return base64.b64encode(plaintext.encode('utf-8'))
 
 def encrypt(key, data):
-    return Function.Encryption.AES.CBC_Encrypt(iv, key, data)
+    return Function.Encryption.AES.CBC.Encrypt(iv, key, data)
 
 def decrypt_and_admin_search(key, data):
     """
@@ -47,7 +47,7 @@ def decrypt_and_admin_search(key, data):
 
     target = ";admin=true;"
     
-    d = Function.Encryption.AES.CBC_Decrypt(iv, key, data)
+    d = Function.Encryption.AES.CBC.Decrypt(iv, key, data)
 
     plainTextWithPadding = base64.b64decode(d)
 

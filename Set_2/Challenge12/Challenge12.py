@@ -26,7 +26,7 @@ def createEncryption(pt):
     data = base64.b64encode(pt + base64.b64decode(appendString))
 
     # Encrypts the data
-    e = Function.Encryption.AES.ECB_Encrypt(key, data)
+    e = Function.Encryption.AES.ECB.Encrypt(key, data)
 
     return e
 
@@ -63,7 +63,7 @@ def task12():
                 plainText = (b"A" * ptLen) + discoveredBytes + bytes([byteChoice])
 
                 # Encrpts and obtains the block
-                e = Function.Encryption.AES.ECB_Encrypt(key, base64.b64encode(plainText))
+                e = Function.Encryption.AES.ECB.Encrypt(key, base64.b64encode(plainText))
                 testBlocks = Function.Encryption.splitBase64IntoBlocks(e, 16)
 
                 # If the blocks match, we've found the value!

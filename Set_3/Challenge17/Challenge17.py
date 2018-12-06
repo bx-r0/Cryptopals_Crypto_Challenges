@@ -29,7 +29,7 @@ def decryptAndCheckPadding(cipherText):
     iv = blocks[0]
     cipherText = Function.Base64_To.concat(blocks[1:])
 
-    plainText = Function.Encryption.AES.CBC_Decrypt(iv, key, cipherText)
+    plainText = Function.Encryption.AES.CBC.Decrypt(iv, key, cipherText)
 
     return Function.Encryption.PKCS7.isValidBase64Bool(plainText)
 def selectStringAndEncrypt(data, force_line=None):
@@ -55,7 +55,7 @@ def selectStringAndEncrypt(data, force_line=None):
 
     linePadded = Function.Encryption.PKCS7.addBase64(line)
 
-    cipherText = Function.Encryption.AES.CBC_Encrypt(iv, key, linePadded)
+    cipherText = Function.Encryption.AES.CBC.Encrypt(iv, key, linePadded)
 
     return Function.Base64_To.concat([iv, cipherText])
 

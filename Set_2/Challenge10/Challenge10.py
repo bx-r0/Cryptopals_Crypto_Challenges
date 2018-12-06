@@ -39,8 +39,8 @@ def task10():
     keyB64 = base64.b64encode(key)
 
     # Checks decryption and encryption
-    plainText = Function.Encryption.AES.CBC_Decrypt(iv, keyB64, data)
-    cipherText = Function.Encryption.AES.CBC_Encrypt(iv, keyB64, plainText)
+    plainText = Function.Encryption.AES.CBC.Decrypt(iv, keyB64, data)
+    cipherText = Function.Encryption.AES.CBC.Encrypt(iv, keyB64, plainText)
 
     return cipherText
 
