@@ -6,12 +6,24 @@ import Function
 import random
 import base64
 
-data = Function.File.loadLines(__file__)
+"""
+>>> The CBC padding oracle attack
+"""
 
-# Assume this is a securly shared key
+
+
+# Assume this is a securely shared key
 key = Function.Encryption.AES.randomKeyBase64()
 
-def decryptAndCheckPadding(cipherText, output=False):
+def decryptAndCheckPadding(cipherText):
+    """
+    >>> Padding Oracle
+
+    Decrypts the data and validates padding.
+    Assume this method takes the role of a server consuming ciphertext and returning
+    a message on the validity of the padding. The side channel information that is
+    returned by the oracle can be used to decrypt the plaintext
+    """
 
     blocks = Function.Encryption.splitBase64IntoBlocks(cipherText)
     iv = blocks[0]
@@ -19,16 +31,23 @@ def decryptAndCheckPadding(cipherText, output=False):
 
     plainText = Function.Encryption.AES.CBC_Decrypt(iv, key, cipherText)
 
-    if output: print(base64.b64decode(plainText))
-
     return Function.Encryption.PKCS7.isValidBase64Bool(plainText)
-
 def selectStringAndEncrypt(data, force_line=None):
+    """
+    >>> Client
+
+    Randomly selects a line from the data.txt encrypts with a random key
+    and appends the IV to it.
+    Assume this method takes the form of the valid user sending over an encrypted cookie.
+    """
+
 
     iv = Function.Encryption.AES.randomKeyBase64()
 
     # Randomly selects a line
     rndIndex = random.randint(0, len(data) - 1)
+
+    # For testing purposes
     if force_line is not None:
         rndIndex = force_line
 
@@ -36,13 +55,18 @@ def selectStringAndEncrypt(data, force_line=None):
 
     linePadded = Function.Encryption.PKCS7.addBase64(line)
 
-    print(base64.b64decode(linePadded))
-
     cipherText = Function.Encryption.AES.CBC_Encrypt(iv, key, linePadded)
 
     return Function.Base64_To.concat([iv, cipherText])
 
 def findPaddingLength(cipherText):
+    """
+    Discovers the padding length of the cipher text.
+    It works by affecting the penultimate bytes to therefore affect the byte with padding.
+    If a byte containing padding is corrupted we can therefore determine where the padding starts
+    and therefore how long it is
+    """
+
     # Discover padding length
     targetBlock = -2
     
@@ -63,7 +87,25 @@ def findPaddingLength(cipherText):
             return 16 - x
 
 def extendPadding(cipherText, paddingLen, currentChars):
+    """
+    Extends the padding for the setup of a new brute force.
     
+    It will take cipher text that produces the plaintext:
+
+    >>> "XXXX XX\x02\x02"
+
+    And turn it into:
+
+    >>> "XXXX XA\x03\x03" 
+
+    To set it up for the brute force of A
+    """
+
+
+    # No padding extension is needed
+    if paddingLen == 0:
+        return cipherText
+
     cipherTextBytes = Function.Encryption.splitBase64IntoBlocks(cipherText, blocksize=1)
 
     # newPaddingChar is just the next increment of the current pad
@@ -82,17 +124,25 @@ def extendPadding(cipherText, paddingLen, currentChars):
 
         cipherTextPrime = Function.Base64_To.concat(cipherTextBytes)
 
-    #decryptAndCheckPadding(cipherTextPrime, True)
-
-    return cipherTextPrime, newPaddingChar
+    return cipherTextPrime
 
 def discoverPlainTextByte(cipherText, paddingLen):
+    """
+    Discovers the byte that gives valid padding
+    For example if the last blocks plaintext (8 bytes) is manipulated to be:
+
+        "XXXX XA\x03\x03"
+
+    We can brute force A in attempt to try and get \x03 as the result. If we do the padding will
+    be correct as determined by the oracle
+    """
+
 
     newPaddingCharB64 = base64.b64encode(chr(paddingLen + 1).encode('utf-8'))
 
     originalCipherTextBytes = Function.Encryption.splitBase64IntoBlocks(cipherText, 1)
 
-    # Trys all combinations of values
+    # Tries all combinations of values
     for i in range(0, 256):
         cipherTextBytes = Function.Encryption.splitBase64IntoBlocks(cipherText, 1)
 
@@ -115,38 +165,77 @@ def discoverPlainTextByte(cipherText, paddingLen):
             # the intermediate cipher text (I)
             intermidate = Function.XOR.b64_Xor(cipherTextBytes[targetByteIndex], newPaddingCharB64)
 
-            # This imtermidate value then xored with the original ciphertext gives us the plaintext value
+            # This intermediate value then xored with the original ciphertext gives us the plaintext value
             char = base64.b64decode(Function.XOR.b64_Xor(intermidate, originalCipherTextBytes[targetByteIndex]))
 
             return char
 
     raise(Exception("Cannot find the next byte!"))
 
-def task17():
+def removeLastBlock(cipherText):
+    """
+    Chops off the last block of the ciphertext
+    """
 
-    # TODO - The cipher texts with no padding causes issues with the detection
-    # lines : 4, 8
-    cipherText = selectStringAndEncrypt(data, 6)
+    t = Function.Encryption.splitBase64IntoBlocks(cipherText)[:-1]
+    return Function.Base64_To.concat(t)
 
-    discoveredBytes = b""
+def task17(cipherTextTestInput=None):
+
+    data = Function.File.loadLines(__file__)
+
+    answer = []
+
+    # For testing purposes
+    if cipherTextTestInput is not None:
+        data = [cipherTextTestInput]
+
+    cipherText = selectStringAndEncrypt(data)
+    numberOfCipherTextBlocks = len(Function.Encryption.splitBase64IntoBlocks(cipherText))
+
+    discoveredBytesFromBlock = b""
 
     # Finds the padding length by working it's way through manipulating bits until there is an error
     # Once there is an error you can determin the first bit of the padding and thus its length
     paddingLen = findPaddingLength(cipherText)
-    
+
     # Generates all the discovered paddings
-    discoveredBytes = [chr(paddingLen).encode('utf-8')] * paddingLen
+    discoveredBytesFromBlock = [chr(paddingLen).encode('utf-8')] * paddingLen
 
-    # Loops round for a complete block
-    for _ in range(0, 16  - paddingLen):
-        
-        # Increments the padding so we can extend it and create a new vaild pad
-        # When the valid pad is created after the brute force, we will have discovered a byte of the plaintext
-        paddingExtended, _ = extendPadding(cipherText, paddingLen, discoveredBytes)
-        discoveredBytes.insert(0, discoverPlainTextByte(paddingExtended, paddingLen))
-        paddingLen += 1
+    # If the entire last block is padding remove it
+    if paddingLen == 16:
+        paddingLen = 0
+        cipherText = removeLastBlock(cipherText)
 
-    print(b"".join(discoveredBytes))
+        answer += discoveredBytesFromBlock
+        discoveredBytesFromBlock = []
+
+        # Reduce the number of blocks we need to search through
+        numberOfCipherTextBlocks -= 1
+
+    # Works through all blocks left to discover
+    # Minus one for the iv
+    for _ in range(0, numberOfCipherTextBlocks - 1):
+
+        # Loops round for a complete block
+        for _ in range(0, 16  - paddingLen):
+            
+            # Increments the padding so we can extend it and create a new valid pad
+            # When the valid pad is created after the brute force, we will have discovered a byte of the plaintext
+            paddingExtended = extendPadding(cipherText, paddingLen, discoveredBytesFromBlock)
+            discoveredBytesFromBlock.insert(0, discoverPlainTextByte(paddingExtended, paddingLen))
+            paddingLen += 1
+
+        # When padding is 16, reset and chop of the end of the cipher text
+        cipherText = removeLastBlock(cipherText)
+        paddingLen = 0
+        answer = discoveredBytesFromBlock + answer
+        discoveredBytesFromBlock = []
+
+
+    resultString = b"".join(answer)
+    resultString = Function.Encryption.PKCS7.isValid(resultString.decode('utf-8'))
+    return resultString
 
 if __name__ == "__main__":
-    task17()
+    print(task17())

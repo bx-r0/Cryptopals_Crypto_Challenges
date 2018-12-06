@@ -27,6 +27,21 @@ import Set_3.Challenge17.Challenge17 as c17
 
 
 def loadData(extra):
+    """
+    Concatenates all data lines into one
+    """
+
+    lines = loadLines(extra)
+
+    lines = list(map(str.strip, lines))
+
+    return "".join(lines)
+
+def loadLines(extra):
+    """
+    Returns all data lines in a list
+    """
+
     path = os.path.realpath(__file__)
     pathSections = path.split('/')
     path = "/".join(pathSections[:-1])
@@ -34,10 +49,8 @@ def loadData(extra):
     lines = []
     with open(path + extra, 'r') as file:
         lines = file.readlines()
-
-    lines = list(map(str.strip, lines))
-
-    return "".join(lines)
+        
+    return lines
 
 class C1(unittest.TestCase):
     
@@ -177,7 +190,7 @@ class C13(unittest.TestCase):
         with self.assertRaises(Exception) as context:
             c13.profile_for("foo@bar.com&role=admin")
 
-        # Checks exeption message
+        # Checks exception message
         self.assertEqual("Invalid email!", context.exception.args[0])
         
     def test_encrypt_decrypt(self):
@@ -229,9 +242,28 @@ class C16(unittest.TestCase):
         self.assertEqual(c16.task16(), True)
 
 class C17(unittest.TestCase):
-    #TODO - Test for challenge 17
 
     def test(self):
+        data = loadLines("/Set_3/Challenge17/data.txt")
+        
+        lineIndex = 0
+        for line in data:
+            expected = base64.b64decode(line).decode('utf-8')
+
+            actual = None
+            try:
+                actual = c17.task17(line.strip())
+            except Exception as e:
+                print(e)
+
+            # Debugging
+            if expected != actual:
+                print(f"Error: on line: {lineIndex}")
+
+            self.assertEqual(actual, expected)
+
+            lineIndex += 1
+
         pass
 
 if __name__ == '__main__':

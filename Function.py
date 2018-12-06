@@ -462,9 +462,9 @@ class Encryption():
 
             padding = base64Bytes[len(base64Bytes) - paddingLength:]
 
-            # # Checks for a correct final byte
-            # if paddingLength < 1 or paddingLength > 16:
-            #     raise(Exception("Error: Invalid padding - Final byte was invalid"))
+            # Checks for a correct final byte
+            if paddingLength < 1 or paddingLength > 16:
+                raise(Exception("Error: Invalid padding - Final byte was invalid"))
             
             # Checks the pad for the same value
             for pad in padding:

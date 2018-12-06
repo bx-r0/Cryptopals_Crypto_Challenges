@@ -22,7 +22,7 @@ https://cryptopals.com/
 - [X] ~~CBC bitflipping attacks~~
 
 # Set 3 - Block & stream crypto
-- [ ] The CBC padding oracle
+- [X] ~~The CBC padding oracle~~
 - [ ] Implement CTR, the stream cipher mode
 - [ ] Break fixed-nonce CTR mode using substitutions
 - [ ] Break fixed-nonce CTR statistically
