@@ -24,8 +24,8 @@ https://cryptopals.com/
 # Set 3 - Block & stream crypto
 - [X] ~~The CBC padding oracle~~
 - [X] ~~Implement CTR, the stream cipher mode~~
-- [ ] Break fixed-nonce CTR mode using substitutions
-- [ ] Break fixed-nonce CTR statistically
+- [X] ~~Break fixed-nonce CTR mode using substitutions~~
+- [X] ~~Break fixed-nonce CTR statistically~~
 - [ ] Implement the MT19937 Mersenne Twister RNG
 - [ ] Crack an MT19937 seed
 - [ ] Clone an MT19937 RNG from its output

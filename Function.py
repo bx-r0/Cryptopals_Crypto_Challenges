@@ -1,15 +1,21 @@
+from Crypto.Cipher import AES
+import binascii
+import random
 import codecs
+import string
 import base64
+import sys
 import re
 import os
-import random
-import binascii
-from Crypto.Cipher import AES
 
 
 englishLetterFreq = {'E': 12.70, 'T': 9.06, 'A': 8.17, 'O': 7.51, 'I': 6.97, 'N': 6.75, 'S': 6.33, 'H': 6.09, 'R': 5.99,
                      'D': 4.25, 'L': 4.03, 'C': 2.78, 'U': 2.76, 'M': 2.41, 'W': 2.36, 'F': 2.23, 'G': 2.02, 'Y': 1.97,
                      'P': 1.93, 'B': 1.29, 'V': 0.98, 'K': 0.77, 'J': 0.15, 'X': 0.15, 'Q': 0.10, 'Z': 0.07}
+
+def importFix():
+    for x in range(0, 5):
+        sys.path.insert(0, "." * x)
 
 class File():
 
@@ -272,6 +278,29 @@ class Encryption():
 
             return total_key
 
+        @staticmethod
+        def transpose_bytes(data_chunks):
+            # Converts to hex for easer manipulation
+            data_chunks = list(map(Base64_To.hexadecimal, data_chunks))
+
+            chunkLen=round(len(data_chunks[0]) / 2)
+
+            transposed=[]
+
+            # A new byte value will be created from the 1st of all
+            # byte values, the 2nd and so on
+            for pos in range(chunkLen):
+
+                byteString=""
+
+                for chunk in data_chunks:
+                    each_hex_byte=re.findall("..", Conversion.remove_byte_notation(chunk))
+                    byteString += each_hex_byte[pos]
+
+                transposed.append(byteString)
+
+            return transposed
+
     class AES():
 
         @staticmethod
@@ -452,6 +481,81 @@ class Encryption():
                 
                 return Base64_To.concat(cipherText)
        
+            @staticmethod
+            def sameNonceStatisticalAttack(cipherTexts):
+                
+                # Used to validate guesses
+                validChars =  string.ascii_letters + "\- ?!',.:;\'\"/" + "0123456789"
+                
+                keyStream = []
+                plainTextStrings = []
+
+                # Finds the length of the cipher texts.
+                # The first length is taken due to all the cipher texts being the same length
+                cipherTextLen = len(Encryption.splitBase64IntoBlocks(cipherTexts[0], 1))
+
+                # Transposes the bytes to solve it like a Vigenere cipher
+                transposedCipherTexts = Encryption.Vigenere.transpose_bytes(cipherTexts)
+                transposedCipherTexts = list(map(HexTo.base64, transposedCipherTexts))
+
+                # Decrypts for the length of the cipherText
+                for cipherTextGuess in range(0, cipherTextLen):
+
+                    # Score, Plaintext, KeyByte
+                    best = [None, None, None]
+
+                    # Makes a guess for a key byte
+                    for i in range(0, 256):
+
+                        plainText = b""
+
+                        # Converts into a single byte base64 value
+                        char = bytes.fromhex(hex(i)[2:].zfill(2))
+                        keyByteGuess = base64.b64encode(char)
+
+                        ctBytes = Encryption.splitBase64IntoBlocks(transposedCipherTexts[cipherTextGuess], blocksize=1)
+
+                        for x in range(0, len(ctBytes)):
+                            pt = XOR.b64_Xor(ctBytes[x], keyByteGuess)
+                            plainText += base64.b64decode(pt)
+
+                        # If the decoding fails the plaintext is ignored
+                        try:
+                            strPt = plainText.decode('utf-8').replace("\x00", "")
+
+                            # Helps filter out options that give invalid outputs
+                            if re.match(f"^[{validChars}]+$", strPt):
+                                score = Statistical.score_distribution(strPt)
+
+                                if best[0] is None or best[0] > score:
+                                    best[0] = score
+                                    best[1] = plainText
+                                    best[2] = keyByteGuess
+                        except UnicodeDecodeError:
+                            pass
+
+                    # If there is an error finding a key candiate
+                    if best[2] is None:
+                        print("ERROR - Key candiate not found. Stopping...")
+                        print() 
+                        break
+
+                    # Adds the best keystream
+                    keyStream.append(best[2])
+
+                # XORs the intermediate data with the ciphertext to get the plaintext
+                for cipher in cipherTexts:
+
+                    plainText = b""
+                    cipherTextBlock = Encryption.splitBase64IntoBlocks(cipher, 1)
+                    for k in range(0, len(keyStream)):
+                        pt = XOR.b64_Xor(keyStream[k], cipherTextBlock[k])
+                        plainText += base64.b64decode(pt)
+
+                    # To lower to filter out issues with upper case being counted
+                    plainTextStrings.append(plainText.decode('utf-8').lower())
+
+                return plainTextStrings
 
     class PKCS7():
 
