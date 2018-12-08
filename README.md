@@ -26,9 +26,9 @@ https://cryptopals.com/
 - [X] ~~Implement CTR, the stream cipher mode~~
 - [X] ~~Break fixed-nonce CTR mode using substitutions~~
 - [X] ~~Break fixed-nonce CTR statistically~~
-- [ ] Implement the MT19937 Mersenne Twister RNG
-- [ ] Crack an MT19937 seed
-- [ ] Clone an MT19937 RNG from its output
+- [X] ~~Implement the MT19937 Mersenne Twister RNG~~
+- [X] ~~Crack an MT19937 seed~~
+- [X] ~~Clone an MT19937 RNG from its output~~
 - [ ] Create the MT19937 stream cipher and break it
 
 # Set 4 - Stream crypto and randomness

@@ -7,6 +7,10 @@ import Set3.Challenge17.Challenge17 as c17
 import Set3.Challenge18.Challenge18 as c18
 import Set3.Challenge19.Challenge19 as c19
 import Set3.Challenge20.Challenge20 as c20
+import Set3.Challenge21.Challenge21 as c21
+import Set3.Challenge22.Challenge22 as c22
+import Set3.Challenge23.Challenge23 as c23
+
 
 class C17(unittest.TestCase):
 
@@ -51,3 +55,24 @@ class C20(unittest.TestCase):
 
     def test(self):
         c20.task20()
+
+class C21(unittest.TestCase):
+
+    def test(self):
+
+        expected = [2807145907, 882709079, 493951047, 2621574848, 4081433851]
+        actual = c21.task21()
+
+        self.assertEqual(actual, expected)
+
+class C22(unittest.TestCase):
+
+    # TODO
+    def test(self):
+        pass
+
+class C23(unittest.TestCase):
+
+    #TODO
+    def test(self):
+        pass
