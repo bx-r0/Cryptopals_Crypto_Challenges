@@ -1,7 +1,6 @@
 import sys ; sys.path += ['.', '../..']
 import Function
 import base64
-import os
 
 """
 >>> AES in ECB mode
@@ -20,7 +19,7 @@ import os
     >>> You can obviously decrypt this using the OpenSSL command-line tool, 
         but we're having you get ECB working in code for a reason. 
         You'll need it a lot later on, and not just for attacking ECB.
-
+        
 """
 
 key = b"YELLOW SUBMARINE"

@@ -1,7 +1,6 @@
 import sys ; sys.path += ['.', '../..']
 import Function
 import random
-import base64
 
 # Random key - this shouldn't be viewable
 key = 'UWwj6bUR3BqgLULVODpzGA=='
@@ -59,9 +58,9 @@ def findOffset():
         if len(r) > 0:
             
             # Finds where the first target block is
-            for x in range(len(blockList)):
-                if r[0] == blockList[x]:
-                    startBlock = x
+            for index, block in enumerate(blockList):
+                if r[0] == block:
+                    startBlock = index
 
             break
 

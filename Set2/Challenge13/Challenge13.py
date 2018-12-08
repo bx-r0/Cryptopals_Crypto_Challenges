@@ -1,6 +1,5 @@
 import sys ; sys.path += ['.', '../..']
 import Function
-import random
 import base64
 import re
 

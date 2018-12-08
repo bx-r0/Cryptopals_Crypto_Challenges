@@ -16,7 +16,7 @@ class C17(unittest.TestCase):
 
     def test(self):
         data = commonTestCode.loadLines("/../Set3/Challenge17/data.txt")
-        
+
         lineIndex = 0
         for line in data:
             expected = base64.b64decode(line).decode('utf-8')
@@ -35,10 +35,11 @@ class C17(unittest.TestCase):
 
             lineIndex += 1
 
+
 class C18(unittest.TestCase):
-     
-     def test(self):
-        
+
+    def test(self):
+
         # Full block of data
         expected = c18.dataText
 
@@ -46,15 +47,18 @@ class C18(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+
 class C19(unittest.TestCase):
 
     def test(self):
         c19.task19()
 
+
 class C20(unittest.TestCase):
 
     def test(self):
         c20.task20()
+
 
 class C21(unittest.TestCase):
 
@@ -65,14 +69,16 @@ class C21(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+
 class C22(unittest.TestCase):
 
     # TODO
     def test(self):
         pass
 
+
 class C23(unittest.TestCase):
 
-    #TODO
+    # TODO
     def test(self):
         pass

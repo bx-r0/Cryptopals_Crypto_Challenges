@@ -20,12 +20,6 @@ def task2():
 
     return output
 
-    # Checks answer is valid
-    if output == b"746865206b696420646f6e277420706c6179":
-        print("# Task 2 passed!")
-    else:
-        print("# Task 2 failed!!")
-
 
 def fXOR(input1, input2):
     """

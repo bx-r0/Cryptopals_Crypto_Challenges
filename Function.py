@@ -13,9 +13,11 @@ englishLetterFreq = {'E': 12.70, 'T': 9.06, 'A': 8.17, 'O': 7.51, 'I': 6.97, 'N'
                      'D': 4.25, 'L': 4.03, 'C': 2.78, 'U': 2.76, 'M': 2.41, 'W': 2.36, 'F': 2.23, 'G': 2.02, 'Y': 1.97,
                      'P': 1.93, 'B': 1.29, 'V': 0.98, 'K': 0.77, 'J': 0.15, 'X': 0.15, 'Q': 0.10, 'Z': 0.07}
 
+
 def importFix():
     for x in range(0, 5):
         sys.path.insert(0, "." * x)
+
 
 class File():
 
@@ -29,7 +31,7 @@ class File():
 
         with open(filePath, 'r') as file:
             data = file.readlines()
-        
+
         return data
 
     @staticmethod
@@ -37,12 +39,12 @@ class File():
         """
         Loads all data from file as a single data chunk
         """
-        
+
         filePath = File.getRealPath(callingFile) + "/data.txt"
 
         with open(filePath, 'r') as file:
             data = file.read()
-        
+
         return data
 
     @staticmethod
@@ -53,9 +55,10 @@ class File():
         path = os.path.realpath(file)
 
         pathSections = path.split("/")
-        del pathSections[-1] # Deletes the file name
+        del pathSections[-1]  # Deletes the file name
 
         return "/".join(pathSections)
+
 
 class Conversion():
 
@@ -66,81 +69,81 @@ class Conversion():
         """
         return str(string)[2:-1]
 
+
 class HexTo():
-        @staticmethod
-        def base64(input):
-            """
-            Hex --> Base64
-            """
+    @staticmethod
+    def base64(string):
+        """
+        Hex --> Base64
+        """
 
-            # Ensures the hex value has the correct number of digits
-            if len(input) % 2 is not 0:
-                input = "0" + input
+        # Ensures the hex value has the correct number of digits
+        if len(string) % 2 is not 0:
+            string = "0" + string
 
+        input_bytes = codecs.decode(string, 'hex')
+        return base64.b64encode(input_bytes)
 
-            input_bytes = codecs.decode(input, 'hex')
-            return base64.b64encode(input_bytes)
-        
-        @staticmethod
-        def utf8(hex):
-            """
-            Hex --> UTF-8
-            """
+    @staticmethod
+    def utf8(string):
+        """
+        Hex --> UTF-8
+        """
 
-            b = codecs.decode(hex, 'hex')
-            return codecs.decode(b, 'utf-8')
-        
-        @staticmethod
-        def binary(hex):
-            """
-            Binary --> Hex 
-            """
+        b = codecs.decode(string, 'hex')
+        return codecs.decode(b, 'utf-8')
 
-            return bin(hex)[2:]
+    @staticmethod
+    def binary(string):
+        """
+        Binary --> Hex 
+        """
 
-        @staticmethod
-        def utf8_check(hex):
-            """
-            Checks a hex value produces a valid UTF-8 string
-            """
-            try:
-                _ = codecs.decode(codecs.decode(hex, 'hex'), 'utf-8')
-                return True
-            except Exception:
-                return False
+        return bin(string)[2:]
+
+    @staticmethod
+    def utf8_check(string):
+        """
+        Checks a hex value produces a valid UTF-8 string
+        """
+        try:
+            _ = codecs.decode(codecs.decode(string, 'hex'), 'utf-8')
+            return True
+        except Exception:
+            return False
+
 
 class Base64_To():
     @staticmethod
-    def hexadecimal(input):
+    def hexadecimal(string):
         """
         Base64 --> Hex
         """
-        bytes = base64.b64decode(input)
-        hex = codecs.encode(bytes, 'hex')
-        return hex
+        hexBytes = base64.b64decode(string)
+        return codecs.encode(hexBytes, 'hex')
 
     @staticmethod
-    def rawBytes(input):
+    def rawBytes(string):
         """
         Decodes a base64 value
         """
-        return base64.b64decode(input)
+        return base64.b64decode(string)
 
     @staticmethod
-    def utf8(input):
+    def utf8(string):
         """
         Base64 --> UTF-8
         """
-        b = base64.b64decode(input)
+        b = base64.b64decode(string)
         return b.decode('utf-8')
 
     @staticmethod
-    def binary(input):
+    def binary(string):
         """
         Base64 --> Binary
         """
 
-        return bin(int(base64.b64decode(input).hex(), 16))[2:]
+        return bin(int(base64.b64decode(string).hex(), 16))[2:]
 
     @staticmethod
     def concat(inputList):
@@ -153,6 +156,7 @@ class Base64_To():
             byteValues += base64.b64decode(x)
 
         return base64.b64encode(byteValues)
+
 
 class UTF8():
     @staticmethod
@@ -170,6 +174,7 @@ class UTF8():
         """
         return base64.b64encode(string.encode('utf-8'))
 
+
 class XOR():
 
     @staticmethod
@@ -177,14 +182,14 @@ class XOR():
         """
         Produces an XOR Result of two equal length Base64 encoded values
         """
-        
+
         bytesA = base64.b64decode(a)
         bytesB = base64.b64decode(b)
 
         result = []
         for b1, b2 in zip(bytesA, bytesB):
             result.append(bytes([b1 ^ b2]))
-        
+
         result = b"".join(result)
         return base64.b64encode(result)
 
@@ -208,9 +213,10 @@ class XOR():
         hexOutput = format(xor, f"#0{length + 2}x")[2:]
 
         return hexOutput
-    
+
+
 class Statistical():
-    
+
     @staticmethod
     def score_distribution(text):
         """
@@ -224,13 +230,13 @@ class Statistical():
             """
 
             letterCount = {'A': 0, 'B': 0, 'C': 0, 'D': 0, 'E': 0, 'F': 0, 'G': 0, 'H': 0, 'I': 0, 'J': 0, 'K': 0,
-                        'L': 0, 'M': 0, 'N': 0, 'O': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'U': 0, 'V': 0,
-                        'W': 0, 'X': 0, 'Y': 0, 'Z': 0}
+                           'L': 0, 'M': 0, 'N': 0, 'O': 0, 'P': 0, 'Q': 0, 'R': 0, 'S': 0, 'T': 0, 'U': 0, 'V': 0,
+                           'W': 0, 'X': 0, 'Y': 0, 'Z': 0}
 
             total_size = len(text)
 
             for letter in text:
-                
+
                 # Ignores a space
                 if letter.isalpha():
                     letterCount[letter.capitalize()] += 1
@@ -253,12 +259,13 @@ class Statistical():
 
         return score
 
+
 class Encryption():
 
     class Vigenere():
 
         @staticmethod
-        def gen_key(string, key): 
+        def gen_key(string, key):
             """
             Generates the repeating sequence of the Vigenere key
             """
@@ -283,18 +290,19 @@ class Encryption():
             # Converts to hex for easer manipulation
             data_chunks = list(map(Base64_To.hexadecimal, data_chunks))
 
-            chunkLen=round(len(data_chunks[0]) / 2)
+            chunkLen = round(len(data_chunks[0]) / 2)
 
-            transposed=[]
+            transposed = []
 
             # A new byte value will be created from the 1st of all
             # byte values, the 2nd and so on
             for pos in range(chunkLen):
 
-                byteString=""
+                byteString = ""
 
                 for chunk in data_chunks:
-                    each_hex_byte=re.findall("..", Conversion.remove_byte_notation(chunk))
+                    each_hex_byte = re.findall(
+                        "..", Conversion.remove_byte_notation(chunk))
                     byteString += each_hex_byte[pos]
 
                 transposed.append(byteString)
@@ -310,7 +318,7 @@ class Encryption():
             """
             key = ""
             for _ in range(blocksize):
-                key += hex(random.randint(0,255))[2:].zfill(2)
+                key += hex(random.randint(0, 255))[2:].zfill(2)
 
             return key
 
@@ -318,7 +326,7 @@ class Encryption():
         def randomKeyBase64(blocksize=16):
             k = Encryption.AES.randomKeyHex(blocksize)
             return HexTo.base64(k)
-        
+
         @staticmethod
         def generateCipherText(email, key):
             """
@@ -341,10 +349,11 @@ class Encryption():
 
                 # Converts key to bytes
                 key = base64.b64decode(key)
-                
+
                 cipher = AES.new(key, AES.MODE_ECB)
 
-                func = lambda cipher, block: cipher.encrypt(base64.b64decode(block))
+                def func(cipher, block): return cipher.encrypt(
+                    base64.b64decode(block))
                 e = Encryption.AES.ECB.__ECB__(func, cipher, data, blocksize)
                 return base64.b64encode(e)
 
@@ -359,7 +368,8 @@ class Encryption():
 
                 cipher = AES.new(key, AES.MODE_ECB)
 
-                func = lambda cipher, block: cipher.decrypt(base64.b64decode(block))
+                def func(cipher, block): return cipher.decrypt(
+                    base64.b64decode(block))
                 e = Encryption.AES.ECB.__ECB__(func, cipher, data, blocksize)
                 return base64.b64encode(e)
 
@@ -373,7 +383,7 @@ class Encryption():
                 for block in blocks:
                     if block in seen:
                         return True
-                    
+
                     seen.add(block)
                 return False
 
@@ -404,13 +414,13 @@ class Encryption():
                 """
 
                 blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
-                
+
                 # Initalisation
                 previous = iv
                 cipherText = []
 
                 for block in blocks:
-                
+
                     # XORed with the previous
                     xor = XOR.b64_Xor(previous, block)
 
@@ -436,10 +446,10 @@ class Encryption():
                 plainText = b""
 
                 for block in blocks:
-                    
+
                     # Decrypts the data
                     d = Encryption.AES.ECB.Decrypt(key, block)
-                    
+
                     pt = XOR.b64_Xor(previous, d)
 
                     plainText += base64.b64decode(pt)
@@ -449,7 +459,7 @@ class Encryption():
                 return base64.b64encode(plainText)
 
         class CTR():
-            
+
             @staticmethod
             def Encrypt_Decrypt(nonce, key, data, blocksize=16):
                 """
@@ -471,32 +481,36 @@ class Encryption():
                     inputData = nonceBytes + counterBytes
 
                     # Encrypt
-                    e = Encryption.AES.ECB.Encrypt(key, base64.b64encode(inputData))
+                    e = Encryption.AES.ECB.Encrypt(
+                        key, base64.b64encode(inputData))
 
                     ct = XOR.b64_Xor(e, plainTextBlock)
 
                     cipherText.append(ct)
 
                     counter += 1
-                
+
                 return Base64_To.concat(cipherText)
-       
+
             @staticmethod
             def sameNonceStatisticalAttack(cipherTexts):
-                
+
                 # Used to validate guesses
-                validChars =  string.ascii_letters + "\- ?!',.:;\'\"/" + "0123456789"
-                
+                validChars = string.ascii_letters + "\- ?!',.:;\'\"/" + "0123456789"
+
                 keyStream = []
                 plainTextStrings = []
 
                 # Finds the length of the cipher texts.
                 # The first length is taken due to all the cipher texts being the same length
-                cipherTextLen = len(Encryption.splitBase64IntoBlocks(cipherTexts[0], 1))
+                cipherTextLen = len(
+                    Encryption.splitBase64IntoBlocks(cipherTexts[0], 1))
 
                 # Transposes the bytes to solve it like a Vigenere cipher
-                transposedCipherTexts = Encryption.Vigenere.transpose_bytes(cipherTexts)
-                transposedCipherTexts = list(map(HexTo.base64, transposedCipherTexts))
+                transposedCipherTexts = Encryption.Vigenere.transpose_bytes(
+                    cipherTexts)
+                transposedCipherTexts = list(
+                    map(HexTo.base64, transposedCipherTexts))
 
                 # Decrypts for the length of the cipherText
                 for cipherTextGuess in range(0, cipherTextLen):
@@ -513,15 +527,17 @@ class Encryption():
                         char = bytes.fromhex(hex(i)[2:].zfill(2))
                         keyByteGuess = base64.b64encode(char)
 
-                        ctBytes = Encryption.splitBase64IntoBlocks(transposedCipherTexts[cipherTextGuess], blocksize=1)
+                        ctBytes = Encryption.splitBase64IntoBlocks(
+                            transposedCipherTexts[cipherTextGuess], blocksize=1)
 
-                        for x in range(0, len(ctBytes)):
-                            pt = XOR.b64_Xor(ctBytes[x], keyByteGuess)
+                        for ctByte in ctBytes:
+                            pt = XOR.b64_Xor(ctByte, keyByteGuess)
                             plainText += base64.b64decode(pt)
 
                         # If the decoding fails the plaintext is ignored
                         try:
-                            strPt = plainText.decode('utf-8').replace("\x00", "")
+                            strPt = plainText.decode(
+                                'utf-8').replace("\x00", "")
 
                             # Helps filter out options that give invalid outputs
                             if re.match(f"^[{validChars}]+$", strPt):
@@ -537,7 +553,7 @@ class Encryption():
                     # If there is an error finding a key candiate
                     if best[2] is None:
                         print("ERROR - Key candiate not found. Stopping...")
-                        print() 
+                        print()
                         break
 
                     # Adds the best keystream
@@ -547,7 +563,8 @@ class Encryption():
                 for cipher in cipherTexts:
 
                     plainText = b""
-                    cipherTextBlock = Encryption.splitBase64IntoBlocks(cipher, 1)
+                    cipherTextBlock = Encryption.splitBase64IntoBlocks(
+                        cipher, 1)
                     for k in range(0, len(keyStream)):
                         pt = XOR.b64_Xor(keyStream[k], cipherTextBlock[k])
                         plainText += base64.b64decode(pt)
@@ -597,7 +614,8 @@ class Encryption():
             Validates PKCS#7 padding for a base64 encoded value
             """
 
-            base64Bytes = Encryption.splitBase64IntoBlocks(base64String, blocksize=1)
+            base64Bytes = Encryption.splitBase64IntoBlocks(
+                base64String, blocksize=1)
 
             paddingLength = ord(base64.b64decode(base64Bytes[-1]))
 
@@ -606,11 +624,12 @@ class Encryption():
             # Checks for a correct final byte
             if paddingLength < 1 or paddingLength > 16:
                 raise(Exception("Error: Invalid padding - Final byte was invalid"))
-            
+
             # Checks the pad for the same value
             for pad in padding:
                 if ord(base64.b64decode(pad)) != paddingLength:
-                    raise(Exception("Error: Invalid padding - Padding is not formed correctly"))
+                    raise(
+                        Exception("Error: Invalid padding - Padding is not formed correctly"))
 
             # Returns the string without the padding
             return Base64_To.concat(base64Bytes[:len(base64Bytes) - paddingLength])
@@ -653,11 +672,12 @@ class Encryption():
                 paddingAndString = [string]
 
                 # Adds the padding values acording to the specification
-                paddingAndString += [base64.b64encode(chr(number).encode('utf-8'))] * number
+                paddingAndString += [base64.b64encode(
+                    chr(number).encode('utf-8'))] * number
 
                 # Creates one base64 value
                 return Base64_To.concat(paddingAndString)
- 
+
             numberOfBytes = len(Encryption.splitBase64IntoBlocks(string, 1))
 
             # Finds the next closest block
@@ -667,7 +687,7 @@ class Encryption():
             difference = (blocksize * targetBlockNumber) - numberOfBytes
 
             return addPadding(difference, string)
-   
+
     @staticmethod
     def removePadding(padding, string):
         """
@@ -683,19 +703,20 @@ class Encryption():
         """
 
         # Converts to hex
-        hex= Conversion.remove_byte_notation(Base64_To.hexadecimal(string))
-        bytes=re.findall("..", hex)
+        hexString = Conversion.remove_byte_notation(
+            Base64_To.hexadecimal(string))
+        hexBytes = re.findall("..", hexString)
 
         # Adds padding if the lengths are not equal
-        while len(bytes) % blocksize != 0:
-            bytes.append("00")
+        while len(hexBytes) % blocksize != 0:
+            hexBytes.append("00")
 
-        chunks=[]
-        for x in range(0, len(bytes), blocksize):
-            chunk=""
+        chunks = []
+        for x in range(0, len(hexBytes), blocksize):
+            chunk = ""
 
             for i in range(x, x + blocksize):
-                chunk += bytes[i]
+                chunk += hexBytes[i]
             chunks.append(HexTo.base64(chunk))
 
         return chunks
@@ -721,6 +742,7 @@ class Encryption():
         string = f"email={email}&uid={uid}&role={role}"
 
         return string
+
 
 def makeBinaryEqualLength(bin1, bin2):
     """

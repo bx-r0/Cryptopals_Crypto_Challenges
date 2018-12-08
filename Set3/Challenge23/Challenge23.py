@@ -4,6 +4,7 @@ import MT19937 as MT
 """
 >>> Clone an MT19937 RNG from its output
 """
+
 m = MT.MT19937(seed=1000)
 
 values = []

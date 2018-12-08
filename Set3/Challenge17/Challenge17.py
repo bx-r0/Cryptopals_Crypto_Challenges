@@ -7,8 +7,6 @@ import base64
 >>> The CBC padding oracle attack
 """
 
-
-
 # Assume this is a securely shared key
 key = Function.Encryption.AES.randomKeyBase64()
 

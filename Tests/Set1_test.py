@@ -12,13 +12,15 @@ import Set1.Challenge6.Challenge6 as c6
 import Set1.Challenge7.Challenge7 as c7
 import Set1.Challenge8.Challenge8 as c8
 
+
 class C1(unittest.TestCase):
-    
+
     def test(self):
         expected = b"SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t"
         actual = c1.task1()
 
         self.assertEqual(actual, expected)
+
 
 class C2(unittest.TestCase):
 
@@ -28,8 +30,9 @@ class C2(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+
 class C3(unittest.TestCase):
-    
+
     def test(self):
         # Expected key value
         expected = "58"
@@ -37,24 +40,27 @@ class C3(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+
 class C4(unittest.TestCase):
-    
+
     def test(self):
         expected = ("35", "Now that the party is jumping\n")
         actual = c4.task4()
 
         self.assertEqual(actual, expected)
 
+
 class C5(unittest.TestCase):
-    
+
     def test(self):
         expected = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f"
         actual = c5.task5()
 
         self.assertEqual(actual, expected)
 
+
 class C6(unittest.TestCase):
-    
+
     def test(self):
 
         # TODO - Why is the output from the task formatted strange?
@@ -63,11 +69,13 @@ class C6(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
+
 class C7(unittest.TestCase):
-    
+
     def test(self):
 
         c7.task7()
+
 
 class C8(unittest.TestCase):
 
