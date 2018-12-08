@@ -2,7 +2,6 @@ import sys ; sys.path += ['.', '../..']
 import collections
 import Function
 import string
-import codecs
 import re
 
 
@@ -13,7 +12,7 @@ import re
 
     Find it.
 
-    (Your code from #3 should help.) 
+    (Your code from #3 should help.)
 """
 
 
@@ -26,14 +25,14 @@ def task4():
     One of the 60-character strings in this file has been encrypted by single-character XOR.
     """
 
-    input = Function.File.loadLines(__file__)
+    inputStr = Function.File.loadLines(__file__)
 
     # Adds all single character hex combinations for a key
     for x in range(0, 255):
         common_characters.append(str(format(x, '02x')))
 
     # Removes new line char
-    for line in input:
+    for line in inputStr:
         line = line.strip()  # Removes the line ending char
 
         # Uses regex to group values into hex pairs

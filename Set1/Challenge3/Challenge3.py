@@ -1,7 +1,6 @@
 import sys ; sys.path += ['.', '../..']
 import collections
 import Function
-import codecs
 import re
 
 """
@@ -17,12 +16,11 @@ common_characters = ['e', 't', 'a', 'o', 'i', 'n', ' ', 's', 'h', 'r', 'd', 'l',
 
 
 def task3():
-    
 
-    input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
+    inputStr = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
 
     # Uses regex to group values into hex pairs
-    decode = re.findall('..', input)
+    decode = re.findall('..', inputStr)
 
     # Finds the most common hex pair
     most_common = collections.Counter(decode).most_common(1)[0][0]
@@ -34,9 +32,9 @@ def task3():
 
         k = Function.XOR.hexXor(most_common, hexChar)
 
-        key = k * round(len(input) / 2)
+        key = k * round(len(inputStr) / 2)
 
-        answer = Function.XOR.hexXor(input, key)
+        answer = Function.XOR.hexXor(inputStr, key)
         answer = Function.HexTo.utf8(answer)
 
         # Regex to check string contains alphanumeric values and punctuation

@@ -91,7 +91,7 @@ def extendPadding(cipherText, paddingLen, currentChars):
 
     And turn it into:
 
-    >>> "XXXX XA\x03\x03" 
+    >>> "XXXX XA\x03\x03"
 
     To set it up for the brute force of A
     """

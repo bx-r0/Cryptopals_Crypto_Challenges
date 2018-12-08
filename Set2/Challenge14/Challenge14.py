@@ -14,8 +14,8 @@ randomBytes = Function.Encryption.AES.randomKeyBase64(random.randint(1, 100))
 def encryption(attackerControlled):
 
     plainText = Function.Base64_To.concat([
-                randomBytes, 
-                Function.UTF8.base64(attackerControlled), 
+                randomBytes,
+                Function.UTF8.base64(attackerControlled),
                 target_bytes])
 
     e = Function.Encryption.AES.ECB.Encrypt(key, plainText)
@@ -105,7 +105,7 @@ def task14():
                 if target == testBlocks[targetBlockIndex]:
                     discoveredChars += chr(i)
                     break
-    
+                    
     result = "".join(discoveredChars)
     result = Function.Encryption.removePadding("\x00", result)
 

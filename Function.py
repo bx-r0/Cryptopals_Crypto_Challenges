@@ -1,5 +1,4 @@
 from Crypto.Cipher import AES
-import binascii
 import random
 import codecs
 import string
@@ -96,7 +95,7 @@ class HexTo():
     @staticmethod
     def binary(string):
         """
-        Binary --> Hex 
+        Binary --> Hex
         """
 
         return bin(string)[2:]
@@ -438,7 +437,7 @@ class Encryption():
             def Decrypt(iv, key, data, blocksize=16):
                 """
                 >>> All data must be Base64 <<<
-                Decrypts data encrypted using AES CBC mode            
+                Decrypts data encrypted using AES CBC mode
                 """
 
                 blocks = Encryption.splitBase64IntoBlocks(data, blocksize)
@@ -565,8 +564,9 @@ class Encryption():
                     plainText = b""
                     cipherTextBlock = Encryption.splitBase64IntoBlocks(
                         cipher, 1)
-                    for k in range(0, len(keyStream)):
-                        pt = XOR.b64_Xor(keyStream[k], cipherTextBlock[k])
+
+                    for index, keyByte in enumerate(keyStream):
+                        pt = XOR.b64_Xor(keyByte, cipherTextBlock[index])
                         plainText += base64.b64decode(pt)
 
                     # To lower to filter out issues with upper case being counted
@@ -605,7 +605,7 @@ class Encryption():
                 return True
 
             # If an exception is thrown, padding is invalid
-            except:
+            except Exception:
                 return False
 
         @staticmethod
@@ -629,7 +629,7 @@ class Encryption():
             for pad in padding:
                 if ord(base64.b64decode(pad)) != paddingLength:
                     raise(
-                        Exception("Error: Invalid padding - Padding is not formed correctly"))
+                        Exception ("Error: Invalid padding - Padding is not formed correctly"))
 
             # Returns the string without the padding
             return Base64_To.concat(base64Bytes[:len(base64Bytes) - paddingLength])
@@ -641,7 +641,7 @@ class Encryption():
                 return True
 
             # If an exception is thrown, padding is invalid
-            except:
+            except Exception:
                 return False
 
         @staticmethod

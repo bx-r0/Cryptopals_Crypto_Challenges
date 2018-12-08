@@ -1,6 +1,4 @@
-import os
 import unittest
-import base64
 
 # SET 1
 import Set1.Challenge1.Challenge1 as c1

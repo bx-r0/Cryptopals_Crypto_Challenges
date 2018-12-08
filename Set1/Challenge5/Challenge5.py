@@ -18,20 +18,20 @@ import Function
     >>> 0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272
         a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f
 
-    Encrypt a bunch of stuff using your repeating-key XOR function. Encrypt your mail. 
-    Encrypt your password file. Your .sig file. Get a feel for it. 
-    I promise, we aren't wasting your time with this. 
+    Encrypt a bunch of stuff using your repeating-key XOR function. Encrypt your mail.
+    Encrypt your password file. Your .sig file. Get a feel for it.
+    I promise, we aren't wasting your time with this.
 """
 
 
 key = "ICE"
 
-input = """Burning 'em, if you ain't quick and nimble
+inputStr = """Burning 'em, if you ain't quick and nimble
 I go crazy when I hear a cymbal"""
 
 
 def task5():
-    return encrypt(input)
+    return encrypt(inputStr)
 
 def encrypt(msg):
     k = Function.Encryption.Vigenere.gen_key(msg, key)

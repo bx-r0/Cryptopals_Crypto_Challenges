@@ -1,8 +1,5 @@
 import sys ; sys.path += ['.', '../..']
 import Function
-import base64
-import string
-import re
 
 """
 >>> Break fixed-nonce CTR mode using substitutions
@@ -30,9 +27,6 @@ def task19():
     # Prints the answers
     for pt in plainTexts:
         print(pt)
-
-
-    
 
 if __name__ == '__main__':
     task19()

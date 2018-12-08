@@ -1,6 +1,5 @@
 import sys ; sys.path += ['.', '../..']
 import Function
-import base64
 import random
 
 """
@@ -59,7 +58,6 @@ def task11():
     mode_guess = ECB_or_CBC(cipherText)
 
     return mode, mode_guess
-    
 
 if __name__ == "__main__":
     task11()

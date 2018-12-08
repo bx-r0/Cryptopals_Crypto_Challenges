@@ -9,9 +9,8 @@ import Function
 
     Detect it.
 
-    Remember that the problem with ECB is that it is stateless and deterministic; 
+    Remember that the problem with ECB is that it is stateless and deterministic;
     the same 16 byte plaintext block will always produce the same 16 byte ciphertext.
-    
 """
 
 def task8():
