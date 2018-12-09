@@ -1,6 +1,8 @@
 # Cryptopals_Crypto_Challenges
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/4375c49a09a140a0954480da4ed63dca)](https://app.codacy.com/app/AidanFray/Cryptopals_Crypto_Challenges?utm_source=github.com&utm_medium=referral&utm_content=AidanFray/Cryptopals_Crypto_Challenges&utm_campaign=Badge_Grade_Dashboard)
+[![BCH compliance](https://bettercodehub.com/edge/badge/AidanFray/Cryptopals_Crypto_Challenges?branch=master)](https://bettercodehub.com/)
+[![codebeat badge](https://codebeat.co/badges/378356d5-532e-44c5-882d-6b35ae43af2e)](https://codebeat.co/projects/github-com-aidanfray-cryptopals_crypto_challenges-master)
 
 https://cryptopals.com/
 
