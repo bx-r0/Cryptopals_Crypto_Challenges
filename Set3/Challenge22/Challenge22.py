@@ -51,9 +51,12 @@ def task22():
     firstOutput = m.getInt()
 
     # Brute forces the seed
-    seed = brute(firstOutput, now)
+    newSeed = brute(firstOutput, now)
 
-    print(f"Seed found: {seed}")
+    return seed, newSeed
+
 
 if __name__ == "__main__":
-    task22()
+    _, newSeed = task22()
+    print(f"Seed found: {newSeed}")
+

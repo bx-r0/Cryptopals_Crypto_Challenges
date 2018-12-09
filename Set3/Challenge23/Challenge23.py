@@ -5,8 +5,6 @@ import MT19937 as MT
 >>> Clone an MT19937 RNG from its output
 """
 
-m = MT.MT19937(seed=1000)
-
 values = []
 
 def undoTemper(y):
@@ -43,13 +41,15 @@ def undoTemper(y):
 
     return y
 
-def generateRandomNumbers():
+def generateRandomNumbers(PRNG):
     # Gets the minimum number required to reverse the state
     for _ in range(0, 624):
-        values.append(m.getInt())
+        values.append(PRNG.getInt())
 
 def task23():
-    generateRandomNumbers()
+    originalMT = MT.MT19937(seed=1000)
+
+    generateRandomNumbers(originalMT)
 
     recoveredState = []
 
@@ -57,20 +57,19 @@ def task23():
     for v in values:
         recoveredState.append(undoTemper(v))
 
-    if m.state == recoveredState:
-        print("State recovered!")
-
     # Splices in the new state
-    clonedGen = MT.MT19937(0)
-    clonedGen.state = recoveredState
+    clonedMT = MT.MT19937(0)
+    clonedMT.state = recoveredState
+
+    return originalMT, clonedMT
+
+if __name__ == "__main__":
+    originalMT, clonedMT = task23()
 
     # Generates an integer from the orginal and cloned
     # PRNGs
-    newInt = m.getInt()
-    newIntCloned = clonedGen.getInt()
+    newInt = originalMT.getInt()
+    newIntCloned = clonedMT.getInt()
 
     if newInt == newIntCloned:
         print("PRNG Successfully cloned!")
-
-if __name__ == "__main__":
-    task23()

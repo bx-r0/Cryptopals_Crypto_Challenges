@@ -9,16 +9,6 @@ import random
 # Random string created on RANDOM.org
 data = "S2JLZ1lXbUhNamxwVWdYVHpTdGJUSzZYdWF1d3JxU1ZLYktnWVdtSE1qbHBVZ1hUelN0YlRLNlh1YXV3cnFTVg=="
 
-def gen_random_key_or_iv(key_size):
-    """
-    Method used to generated a key, the output is hex
-    """
-    key = ""
-    for _ in range(key_size):
-        key += hex(random.randint(0,255))[2:].zfill(2)
-
-    return key
-
 def ModeChoice():
     """
     Method to determine CBC or ECB will be used

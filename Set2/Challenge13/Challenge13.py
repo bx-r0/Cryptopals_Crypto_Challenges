@@ -117,23 +117,8 @@ def encode(string):
 
     return result
 
-def profile_for(email, admin=False):
-
-    r = re.match(r"^[^=&]+$", email)
-
-    if r is None:
-        raise(Exception("Invalid email!"))
-
-    uid = 10
-
-    if admin:
-        role = "admin"
-    else:
-        role = "user"
-
-    string = f"email={email}&uid={uid}&role={role}"
-
-    return string
+def profile_for(email):
+    return Function.Encryption.profileFor(email)
 
 def encrypt_user_profile(user_profile, key):
     base64Profile = base64.b64encode(user_profile.encode("utf-8"))

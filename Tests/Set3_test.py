@@ -10,6 +10,7 @@ import Set3.Challenge20.Challenge20 as c20
 import Set3.Challenge21.Challenge21 as c21
 import Set3.Challenge22.Challenge22 as c22
 import Set3.Challenge23.Challenge23 as c23
+import Set3.Challenge24.Challenge24 as c24
 
 
 class C17(unittest.TestCase):
@@ -72,13 +73,34 @@ class C21(unittest.TestCase):
 
 class C22(unittest.TestCase):
 
-    # TODO
     def test(self):
-        pass
+        expected, actual = c22.task22()
+
+        self.assertEqual(actual, expected)        
 
 
 class C23(unittest.TestCase):
 
-    # TODO
     def test(self):
-        pass
+        originalMT, clonedMT = c23.task23()
+
+        # Generates an integer from the orginal and cloned
+        # PRNGs
+        expected = originalMT.getInt()
+        actual = clonedMT.getInt()
+
+        self.assertEqual(actual, expected)
+
+
+class C24(unittest.TestCase):
+
+    def test(self):
+        expected = 123
+        actual = c24.task24(expected)
+
+        self.assertEqual(actual, expected)
+
+        expected = 1
+        actual = c24.task24(expected)
+
+        self.assertEqual(actual, expected)
