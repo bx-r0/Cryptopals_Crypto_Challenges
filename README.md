@@ -38,9 +38,9 @@ https://cryptopals.com/
 
 ## Set 4 - Stream crypto and randomness
   - [X] ~~Break "random access read/write" AES CTR~~
-  - [ ] CTR bitflipping
-  - [ ] Recover the key from CBC with IV=Key
-  - [ ] Implement a SHA-1 keyed MAC
+  - [X] ~~CTR bitflipping~~
+  - [X] ~~Recover the key from CBC with IV=Key~~
+  - [X] ~~Implement a SHA-1 keyed MAC~~
   - [ ] Break a SHA-1 keyed MAC using length extension
   - [ ] Break an MD4 keyed MAC using length extension
   - [ ] Implement and break HMAC-SHA1 with an artificial timing leak

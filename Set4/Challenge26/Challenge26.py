@@ -2,51 +2,57 @@ import sys ; sys.path += ['.', '../..']
 import Function
 import base64
 
-# Random key and IV are created on every execution
+"""
+>>> CTR Bitflipping
+"""
+
+# Random key
 key = Function.Encryption.AES.randomKeyBase64()
-iv = Function.Encryption.AES.randomKeyBase64()
+nonce = 0
 
 def encrypt(key, data):
-    return Function.Encryption.AES.CBC.Encrypt(iv, key, data)
+    """
+    Encrypts using CTR Mode
+    """
+    return Function.Encryption.AES.CTR.Encrypt_Decrypt(nonce, key, data)
 
 def decrypt_and_admin_search(key, data):
     """
     Simulates granting access to the admin system
     """
 
-    target = ";admin=true;"
+    target = "admin=true"
     
-    d = Function.Encryption.AES.CBC.Decrypt(iv, key, data)
+    d = Function.Encryption.AES.CTR.Encrypt_Decrypt(nonce, key, data)
+
     plainTextWithPadding = base64.b64decode(d)
 
     return target in str(plainTextWithPadding)
 
 def bitflip(cipherText):
+    """
+    Code that performs the actual bitflipping
+    """
     
-    # The block that contains the payload
-    targetBlock = 1
+    # This is the same block as the plaintext will be
+    targetBlock = 2
 
     blocks = Function.Encryption.splitBase64IntoBlocks(cipherText)
 
     # Splits the block into single byte Base64 values
     chars = Function.Encryption.splitBase64IntoBlocks(blocks[targetBlock], 1)
 
-    # The outcome value is determed by XORing the actual cipher text byte (A) with its previous plaintext
-    #  value (PA) then applying the desired value (PD) 
-    #  A' = A ⊕ PA ⊕ PD
-    #       https://masterpessimistaa.wordpress.com/2017/05/03/cbc-bit-flipping-attack/
-    chars[0] = Function.BitFlippingAttacks.flip(chars[0], ":", ";")
-    chars[6] = Function.BitFlippingAttacks.flip(chars[6], ":", "=")
-    chars[11] = Function.BitFlippingAttacks.flip(chars[11], ":", ";")
+    # The same byte as the target flip
+    chars[5] = Function.BitFlippingAttacks.flip(chars[5], ":", "=")
    
     blocks[targetBlock] = Function.Base64_To.concat(chars)
 
     return Function.Base64_To.concat(blocks)
 
-def task16():
+def task26():
 
     # Creates the string with placeholders
-    data = Function.BitFlippingAttacks.createString(":admin:true:")
+    data = Function.BitFlippingAttacks.createString("admin:true")
     cipherText = bitflip(encrypt(key, data))
 
     # If the encrypted text contains our ";admin=true;" string we have access
@@ -58,6 +64,5 @@ def task16():
         return False
 
 if __name__ == "__main__":
-    output = True
-    task16()
+    task26()
     

@@ -1,4 +1,5 @@
 from Crypto.Cipher import AES
+from Crypto.Hash import SHA
 import random
 import codecs
 import string
@@ -11,11 +12,6 @@ import os
 englishLetterFreq = {'E': 12.70, 'T': 9.06, 'A': 8.17, 'O': 7.51, 'I': 6.97, 'N': 6.75, 'S': 6.33, 'H': 6.09, 'R': 5.99,
                      'D': 4.25, 'L': 4.03, 'C': 2.78, 'U': 2.76, 'M': 2.41, 'W': 2.36, 'F': 2.23, 'G': 2.02, 'Y': 1.97,
                      'P': 1.93, 'B': 1.29, 'V': 0.98, 'K': 0.77, 'J': 0.15, 'X': 0.15, 'Q': 0.10, 'Z': 0.07}
-
-
-def importFix():
-    for x in range(0, 5):
-        sys.path.insert(0, "." * x)
 
 
 class File():
@@ -703,8 +699,8 @@ class Encryption():
         """
 
         # Converts to hex
-        hexString = Conversion.remove_byte_notation(
-            Base64_To.hexadecimal(string))
+        hexString = Conversion.remove_byte_notation(Base64_To.hexadecimal(string))
+
         hexBytes = re.findall("..", hexString)
 
         # Adds padding if the lengths are not equal
@@ -743,6 +739,84 @@ class Encryption():
 
         return string
 
+
+class SHA_MAC():
+    
+    @staticmethod
+    def create(key, message):
+        """
+        Creates a tag for a message
+        """
+
+        messageB64 = base64.b64encode(message)
+        hashData = Base64_To.concat([key, messageB64])
+        mac = SHA_MAC.HashBase64(hashData)
+
+        return mac
+
+    @staticmethod
+    def verify(key, message, mac):
+        messageCheck = SHA_MAC.create(key, message)
+        return messageCheck == mac
+
+    @staticmethod
+    def HashBase64(dataB64):
+        h = SHA.new()
+        h.update(base64.b64decode(dataB64))
+        hB64 = base64.b64encode(h.digest())
+        return hB64
+
+
+class BitFlippingAttacks():
+    
+    # Terminal colours
+    class COLOURS:
+        RED = "\033[91m"
+        GREEN = "\033[92m"
+        RESET = "\033[0m"
+
+    @staticmethod
+    def createString(userData):
+        """
+        Formats and encrypts our string
+        """
+
+        # Special characters are returned
+        userData = userData.replace(';', '\;')
+        userData = userData.replace('=', '\=')
+
+        pre = "comment1=cooking%20MCs;userdata="
+        post = ";comment2=%20like%20a%20pound%20of%20bacon"
+
+        string = pre + userData + post
+
+        # Adds padding and returns
+        plaintext = Encryption.PKCS7.add(string)
+
+        # Encodes to base64 and returns
+        return base64.b64encode(plaintext.encode('utf-8'))
+
+    @staticmethod
+    def colouredOutput(access):
+        
+        if access:
+            print(BitFlippingAttacks.COLOURS.GREEN + 
+            "Access granted!" + 
+            BitFlippingAttacks.COLOURS.RESET)
+        else:
+            print(BitFlippingAttacks.COLOURS.RED + 
+            "Access denied!" + 
+            BitFlippingAttacks.COLOURS.RESET)
+
+    @staticmethod
+    def flip(currentVal, currentChar, targetChar):
+
+        currentValHex = Base64_To.hexadecimal(currentVal)
+
+        # XORs the values to produce the bit change
+        xor = hex(int(currentValHex, 16) ^ ord(currentChar) ^ ord(targetChar))[2:]
+
+        return HexTo.base64(xor)
 
 def makeBinaryEqualLength(bin1, bin2):
     """
