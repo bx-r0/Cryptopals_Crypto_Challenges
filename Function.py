@@ -1,5 +1,5 @@
 from Crypto.Cipher import AES
-from Crypto.Hash import SHA
+from SHA1 import SHA1
 import random
 import codecs
 import string
@@ -761,10 +761,8 @@ class SHA_MAC():
 
     @staticmethod
     def HashBase64(dataB64):
-        h = SHA.new()
-        h.update(base64.b64decode(dataB64))
-        hB64 = base64.b64encode(h.digest())
-        return hB64
+        hexHash = SHA1.createDigest(base64.b64decode(dataB64))
+        return HexTo.base64(hexHash)
 
 
 class BitFlippingAttacks():

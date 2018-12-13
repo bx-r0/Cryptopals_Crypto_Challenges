@@ -1,8 +1,5 @@
-from Crypto.Hash import SHA
-
 import sys ; sys.path += ['.', '../..']
 import Function
-import base64
 
 """
 >>> Implement a SHA-1 keyed MAC
