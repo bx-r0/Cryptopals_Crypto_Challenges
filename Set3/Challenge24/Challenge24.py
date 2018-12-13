@@ -1,6 +1,5 @@
 import sys ; sys.path += ['.', '../..']
 import MT19937 as M
-from time import time
 from random import randint
 import Function
 import base64

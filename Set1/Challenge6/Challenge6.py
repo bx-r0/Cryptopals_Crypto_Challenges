@@ -1,6 +1,5 @@
 import sys ; sys.path += ['.', '../..']
 import Function
-import codecs
 import re
 
 
