@@ -41,7 +41,7 @@ https://cryptopals.com/
   - [X] ~~CTR bitflipping~~
   - [X] ~~Recover the key from CBC with IV=Key~~
   - [X] ~~Implement a SHA-1 keyed MAC~~
-  - [ ] Break a SHA-1 keyed MAC using length extension
+  - [X] ~~Break a SHA-1 keyed MAC using length extension~~
   - [ ] Break an MD4 keyed MAC using length extension
   - [ ] Implement and break HMAC-SHA1 with an artificial timing leak
   - [ ] Break HMAC-SHA1 with a slightly less artificial timing leak

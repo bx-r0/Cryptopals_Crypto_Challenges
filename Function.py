@@ -761,17 +761,24 @@ class SHA_MAC():
 
     @staticmethod
     def HashBase64(dataB64):
-        hexHash = SHA1.createDigest(base64.b64decode(dataB64))
-        return HexTo.base64(hexHash)
+        return SHA1.createDigest(base64.b64decode(dataB64))
 
+
+ # Terminal colours
+class COLOURS:
+    RED = "\033[91m"
+    GREEN = "\033[92m"
+    RESET = "\033[0m"
+
+    @staticmethod
+    def printGreen(message):
+        print(COLOURS.GREEN + message + COLOURS.RESET)
+
+    @staticmethod
+    def printRed(message):
+        print(COLOURS.RED + message + COLOURS.RESET)
 
 class BitFlippingAttacks():
-    
-    # Terminal colours
-    class COLOURS:
-        RED = "\033[91m"
-        GREEN = "\033[92m"
-        RESET = "\033[0m"
 
     @staticmethod
     def createString(userData):
@@ -798,13 +805,9 @@ class BitFlippingAttacks():
     def colouredOutput(access):
         
         if access:
-            print(BitFlippingAttacks.COLOURS.GREEN + 
-            "Access granted!" + 
-            BitFlippingAttacks.COLOURS.RESET)
+            COLOURS.printGreen("Access granted!")
         else:
-            print(BitFlippingAttacks.COLOURS.RED + 
-            "Access denied!" + 
-            BitFlippingAttacks.COLOURS.RESET)
+            COLOURS.printRed("Access denied!")
 
     @staticmethod
     def flip(currentVal, currentChar, targetChar):

@@ -5,7 +5,7 @@ import re
 class SHA1():
     
     @staticmethod
-    def createDigest(message, h0=0x67452301, h1=0xEFCDAB89, h2=0x98BADCFE, h3=0x10325476, h4=0xC3D2E1F0):
+    def createDigest(message, ml=None, h0=0x67452301, h1=0xEFCDAB89, h2=0x98BADCFE, h3=0x10325476, h4=0xC3D2E1F0):
         """
         Creates a message digests for a bytes message.
         Output is in Base64
@@ -14,8 +14,11 @@ class SHA1():
         # Converts to binary
         messageBinary = BitArray(bytes=message).bin
 
+        if ml is None:
+            ml = len(messageBinary)
+
         # Adds padding to the value
-        messageBinary = SHA1.addPadding(messageBinary)
+        messageBinary = SHA1.addPadding(messageBinary, ml)
 
         # Creates 512 bit chunks
         messageChunks = SHA1.chunk(messageBinary)
@@ -76,16 +79,14 @@ class SHA1():
             h4 = (h4 + e) & 0xffffffff
 
         hexHash = '%08x%08x%08x%08x%08x' % (h0, h1, h2, h3, h4)
-        return base64.b64encode(bytes.fromhex(hexHash))
+        bytesHash = bytes.fromhex(hexHash)
+        return base64.b64encode(bytesHash)
 
     @staticmethod
-    def addPadding(messageBinary):
+    def addPadding(messageBinary, messageLength):
         """
         Adds padding defined in the SHA1 specification
         """
-
-        # Original message length
-        messageLength = len(messageBinary)
 
         if len(messageBinary) % 8 == 0:
             messageBinary += "1"
