@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-import MT19937 as MT
+from SharedCode import MT19937 as MT
 
 def task21():
     mTwister = MT.MT19937(seed=1000)

@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-import Function
+from SharedCode import Function
 import base64
 
 # Random key and IV are created on every execution

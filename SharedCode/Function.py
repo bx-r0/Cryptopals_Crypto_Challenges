@@ -1,5 +1,5 @@
 from Crypto.Cipher import AES
-from SHA1 import SHA1
+from SharedCode import SHA1
 import random
 import codecs
 import string

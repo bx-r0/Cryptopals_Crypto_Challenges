@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-import Function
+from SharedCode import Function
 
 """
 >>> Implement PKCS#7 padding

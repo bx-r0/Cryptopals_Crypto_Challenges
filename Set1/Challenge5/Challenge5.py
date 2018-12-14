@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-import Function
+from SharedCode import Function
 
 """
 >>> Implement repeating-key XOR

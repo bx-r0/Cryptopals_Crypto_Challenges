@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-import Function
+from SharedCode import Function
 
 """
 >>> Implement a SHA-1 keyed MAC

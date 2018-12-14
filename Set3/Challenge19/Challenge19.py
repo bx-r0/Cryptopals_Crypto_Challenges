@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-import Function
+from SharedCode import Function
 
 """
 >>> Break fixed-nonce CTR mode using substitutions

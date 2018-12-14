@@ -1,6 +1,6 @@
 import sys ; sys.path += ['.', '../..']
 import collections
-import Function
+from SharedCode import Function
 import re
 
 """

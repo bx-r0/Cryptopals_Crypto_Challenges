@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-import Function
+from SharedCode import Function
 
 # Random key
 key = Function.Encryption.AES.randomKeyBase64()

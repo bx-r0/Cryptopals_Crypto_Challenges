@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-import MT19937 as MT
+from SharedCode import MT19937 as MT
 from time import time
 import random
 
