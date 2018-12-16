@@ -194,11 +194,8 @@ class XOR():
         bytesA = base64.b64decode(a)
         bytesB = base64.b64decode(b)
 
-        result = []
-        for b1, b2 in zip(bytesA, bytesB):
-            result.append(bytes([b1 ^ b2]))
+        result = XOR.bytesXor(bytesA, bytesB)
 
-        result = b"".join(result)
         return base64.b64encode(result)
 
     @staticmethod
@@ -221,6 +218,15 @@ class XOR():
         hexOutput = format(xor, f"#0{length + 2}x")[2:]
 
         return hexOutput
+
+    @staticmethod
+    def bytesXor(a, b):
+        result = []
+        for b1, b2 in zip(a, b):
+            result.append(bytes([b1 ^ b2]))
+
+        result = b"".join(result)
+        return result
 
 
 class Statistical():
@@ -751,35 +757,6 @@ class Encryption():
         string = f"email={email}&uid={uid}&role={role}"
 
         return string
-
-
-
-
-        @staticmethod
-        def create(key, message):
-            """
-            Creates a tag for a message
-            """
-
-            messageB64 = base64.b64encode(message)
-            hashData = Base64_To.concat([key, messageB64])
-            mac = MAC.MD4.HashBase64(hashData)
-
-            return mac
-
-        @staticmethod
-        def verify(key, message, mac):
-            """
-            Verifies that a given mac is for a given message
-            """
-
-            messageCheck = MAC.MD4.create(key, message)
-            return messageCheck == mac
-
-        @staticmethod
-        def HashBase64(dataB64):
-            return MD4.createDigest(base64.b64decode(dataB64))
-
 
 class COLOURS:
     RED = "\033[91m"

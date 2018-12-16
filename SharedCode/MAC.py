@@ -50,3 +50,37 @@ class MAC():
         @staticmethod
         def HashBase64(dataB64):
             return MD4.createDigest(base64.b64decode(dataB64))
+
+class HMAC():
+
+    class SHA():
+
+        @staticmethod
+        def create(keyBytes, messageBytes, blocksize=64):
+            
+            # If key is longer than the blocksize:
+            if len(keyBytes) > blocksize:
+                keyHashBase64 = SHA1.createDigest(keyBytes)
+                keyBytes = base64.b64decode(keyHashBase64)
+            # Padding
+            else:
+                while len(keyBytes) < blocksize:
+                    keyBytes += b"\x00"
+
+            # Creates pads
+            opad = b"\x5c" * blocksize
+            ipad = b"\x36" * blocksize
+
+            # Xors pads with the key
+            opad_key = Function.XOR.bytesXor(opad, keyBytes)
+            ipad_key = Function.XOR.bytesXor(ipad, keyBytes)
+
+            innerHash = SHA1.createDigest(ipad_key + messageBytes)
+            innerHashBytes = base64.b64decode(innerHash)
+
+            return SHA1.createDigest(opad_key + innerHashBytes)
+
+        @staticmethod
+        def createHex(keyBytes, messageBytes, blocksize=64):
+            base64Hash = HMAC.SHA.create(keyBytes, messageBytes, blocksize)
+            return Function.Base64_To.hexadecimal(base64Hash)
