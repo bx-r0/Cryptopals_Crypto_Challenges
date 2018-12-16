@@ -1,4 +1,5 @@
 import sys ; sys.path += ['.', '../..']
+from SharedCode.MAC import MAC
 from SharedCode import Function
 
 """
@@ -10,10 +11,10 @@ key = Function.Encryption.AES.randomKeyBase64()
 def task28():
     message = b"Meet me by the dock at dawn"
 
-    mac = Function.SHA_MAC.create(key, message)
+    mac = MAC.SHA.create(key, message)
 
     # Should be correct
-    if Function.SHA_MAC.verify(key, message, mac):
+    if MAC.SHA.verify(key, message, mac):
         print("MAC Correct!")
     else:
         print("MAC Incorrect!")
@@ -22,7 +23,7 @@ def task28():
     message = b"Meet me by the dock at noon"
 
     # Should be incorrect
-    if Function.SHA_MAC.verify(key, message, mac):
+    if MAC.SHA.verify(key, message, mac):
         print("MAC Correct!")
     else:
         print("MAC Incorrect!")

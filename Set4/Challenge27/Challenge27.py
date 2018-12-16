@@ -58,7 +58,7 @@ def task27():
 
     keyTest = Function.XOR.b64_Xor(ptBlocks[0], ptBlocks[2])
 
-    print(f"Key is: {keyTest}")
+    return keyTest
 
 if __name__ == "__main__":
     task27()

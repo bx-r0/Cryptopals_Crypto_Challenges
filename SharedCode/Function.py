@@ -1,5 +1,4 @@
 from Crypto.Cipher import AES
-from SharedCode import SHA1
 import random
 import codecs
 import string
@@ -64,7 +63,7 @@ class Conversion():
         """
         return str(string)[2:-1]
 
-
+   
 class HexTo():
     @staticmethod
     def base64(string):
@@ -168,6 +167,20 @@ class UTF8():
         Converts an utf-8 string to a base64 string
         """
         return base64.b64encode(string.encode('utf-8'))
+
+
+class BinaryTo():
+
+    @staticmethod
+    def byteString(binaryValue):
+         # Turn binary value into bytes
+        byteValues = splitStringIntoChunks(binaryValue, size=8)
+
+        byteList = []
+        for b in byteValues:
+            byteList.append(bytes([int(b, 2)]))
+
+        return b"".join(byteList)
 
 
 class XOR():
@@ -740,31 +753,34 @@ class Encryption():
         return string
 
 
-class SHA_MAC():
-    
-    @staticmethod
-    def create(key, message):
-        """
-        Creates a tag for a message
-        """
-
-        messageB64 = base64.b64encode(message)
-        hashData = Base64_To.concat([key, messageB64])
-        mac = SHA_MAC.HashBase64(hashData)
-
-        return mac
-
-    @staticmethod
-    def verify(key, message, mac):
-        messageCheck = SHA_MAC.create(key, message)
-        return messageCheck == mac
-
-    @staticmethod
-    def HashBase64(dataB64):
-        return SHA1.createDigest(base64.b64decode(dataB64))
 
 
- # Terminal colours
+        @staticmethod
+        def create(key, message):
+            """
+            Creates a tag for a message
+            """
+
+            messageB64 = base64.b64encode(message)
+            hashData = Base64_To.concat([key, messageB64])
+            mac = MAC.MD4.HashBase64(hashData)
+
+            return mac
+
+        @staticmethod
+        def verify(key, message, mac):
+            """
+            Verifies that a given mac is for a given message
+            """
+
+            messageCheck = MAC.MD4.create(key, message)
+            return messageCheck == mac
+
+        @staticmethod
+        def HashBase64(dataB64):
+            return MD4.createDigest(base64.b64decode(dataB64))
+
+
 class COLOURS:
     RED = "\033[91m"
     GREEN = "\033[92m"
@@ -777,6 +793,7 @@ class COLOURS:
     @staticmethod
     def printRed(message):
         print(COLOURS.RED + message + COLOURS.RESET)
+
 
 class BitFlippingAttacks():
 
@@ -819,6 +836,7 @@ class BitFlippingAttacks():
 
         return HexTo.base64(xor)
 
+
 def makeBinaryEqualLength(bin1, bin2):
     """
     Makes sure two binary values are the same length
@@ -836,3 +854,13 @@ def makeBinaryEqualLength(bin1, bin2):
             bin1 = bin1.zfill(b2Len)
 
         return bin1, bin2
+
+
+def splitStringIntoChunks(string, size):
+    """
+    Splits a string into a set of characters
+    """
+
+    pattern = ".{" + str(size) + "}"
+
+    return re.findall(pattern, string)

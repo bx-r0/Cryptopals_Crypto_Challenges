@@ -1,4 +1,6 @@
+import sys ; sys.path += ['.', '../..']
 from bitstring import BitArray
+from SharedCode import Function
 import base64
 import re
 
@@ -21,13 +23,13 @@ class SHA1():
         messageBinary = SHA1.addPadding(messageBinary, ml)
 
         # Creates 512 bit chunks
-        messageChunks = SHA1.chunk(messageBinary)
+        messageChunks = SHA1.splitStringIntoChunks(messageBinary, size=512)
 
         for chunk in messageChunks:
 
             # Split chunck into 32bit words
             # Should expect 16 chunks
-            words = SHA1.chunk(chunk, size=32)
+            words = SHA1.splitStringIntoChunks(chunk, size=32)
             words += [0] * 64
 
             # Extends sixteen 32 bit values into eighty
@@ -83,6 +85,12 @@ class SHA1():
         return base64.b64encode(bytesHash)
 
     @staticmethod
+    def createDigestHex(message, ml=None, h0=0x67452301, h1=0xEFCDAB89, h2=0x98BADCFE, h3=0x10325476, h4=0xC3D2E1F0):
+        hashBase64 = SHA1.createDigest(message, ml, h0, h1, h2, h3, h4)
+        hashHex = Function.Base64_To.hexadecimal(hashBase64)
+        return Function.Conversion.remove_byte_notation(hashHex)
+
+    @staticmethod
     def addPadding(messageBinary, messageLength):
         """
         Adds padding defined in the SHA1 specification
@@ -109,11 +117,11 @@ class SHA1():
         return ((value << shift) & 0xffffffff) | (value >> (32 - shift))
 
     @staticmethod
-    def chunk(messageBinary, size=512):
+    def splitStringIntoChunks(string, size):
         """
-        Cuts binary data in chunks
+        Splits a string into a set of characters
         """
 
         pattern = ".{" + str(size) + "}"
 
-        return re.findall(pattern, messageBinary)
+        return re.findall(pattern, string)

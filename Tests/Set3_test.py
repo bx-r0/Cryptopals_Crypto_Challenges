@@ -13,9 +13,9 @@ import Set3.Challenge23.Challenge23 as c23
 import Set3.Challenge24.Challenge24 as c24
 
 
-class C17(unittest.TestCase):
+class Set3(unittest.TestCase):
 
-    def test(self):
+    def test_C17(self):
         data = commonTestCode.loadLines("/../Set3/Challenge17/data.txt")
 
         lineIndex = 0
@@ -36,10 +36,7 @@ class C17(unittest.TestCase):
 
             lineIndex += 1
 
-
-class C18(unittest.TestCase):
-
-    def test(self):
+    def test_C18(self):
 
         # Full block of data
         expected = c18.dataText
@@ -48,40 +45,25 @@ class C18(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-
-class C19(unittest.TestCase):
-
-    def test(self):
+    def test_C19(self):
         c19.task19()
 
-
-class C20(unittest.TestCase):
-
-    def test(self):
+    def test_C20(self):
         c20.task20()
 
-
-class C21(unittest.TestCase):
-
-    def test(self):
+    def test_C21(self):
 
         expected = [2807145907, 882709079, 493951047, 2621574848, 4081433851]
         actual = c21.task21()
 
         self.assertEqual(actual, expected)
 
-
-class C22(unittest.TestCase):
-
-    def test(self):
+    def test_C22(self):
         expected, actual = c22.task22()
 
         self.assertEqual(actual, expected)        
 
-
-class C23(unittest.TestCase):
-
-    def test(self):
+    def test_C23(self):
         originalMT, clonedMT = c23.task23()
 
         # Generates an integer from the orginal and cloned
@@ -91,10 +73,7 @@ class C23(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-
-class C24(unittest.TestCase):
-
-    def test(self):
+    def test_C24(self):
         expected = 123
         actual = c24.task24(expected)
 

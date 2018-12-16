@@ -1,1 +1,4 @@
-# TODO - Create tests for MT19937 code
+import unittest
+
+class MTTests(unittest.TestCase):
+    pass

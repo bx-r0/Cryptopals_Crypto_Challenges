@@ -13,48 +13,36 @@ import Set2.Challenge15.Challenge15 as c15
 import Set2.Challenge16.Challenge16 as c16
 
 
-class C9(unittest.TestCase):
+class Set2(unittest.TestCase):
 
-    def test(self):
+    def test_C9(self):
         expected = "YELLOW SUBMARINE\x04\x04\x04\x04"
         actual = c9.task9()
 
         self.assertEqual(actual, expected)
 
-
-class C10(unittest.TestCase):
-
-    def test(self):
+    def test_C10(self):
         expected = commonTestCode.loadData("/../Set2/Challenge10/data.txt")
         actual = str(c10.task10())[2:-1]
 
         self.assertEqual(actual, expected)
 
-
-class C11(unittest.TestCase):
-
-    def test(self):
+    def test_C11(self):
 
         # Repeats the test
-        for _ in range(1000):
+        for _ in range(500):
 
             # Obtains the chosen mode, and the actual mode
             expected, actual = c11.task11()
             self.assertEqual(actual, expected)
 
-
-class C12(unittest.TestCase):
-
-    def test(self):
+    def test_C12(self):
         expected = base64.b64decode(c12.appendString).decode('utf-8')
         actual = c12.task12()
 
         self.assertEqual(actual, expected)
 
-
-class C13(unittest.TestCase):
-
-    def test_decode(self):
+    def test_C13_decode(self):
         testInput = "foo=bar&baz=qux&zap=zazzle"
 
         expected = "{\n  foo: 'bar',\n  baz: 'qux',\n  zap: 'zazzle'\n}"
@@ -62,7 +50,7 @@ class C13(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-    def test_encode(self):
+    def test_C13_encode(self):
         testInput = "{\n  foo: 'bar',\n  baz: 'qux',\n  zap: 'zazzle'\n}"
 
         expected = "foo=bar&baz=qux&zap=zazzle"
@@ -70,7 +58,7 @@ class C13(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-    def test_encode_decode(self):
+    def test_C13_encode_decode(self):
         testInput = "test=great&outcome=correct&time=wellspent&percentage=100"
 
         expected = testInput
@@ -78,21 +66,21 @@ class C13(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-    def test_profile_gen(self):
+    def test_C13_profile_gen(self):
 
         expected = "email=foo@bar.com&uid=10&role=user"
         actual = c13.profile_for("foo@bar.com")
 
         self.assertEqual(actual, expected)
 
-    def test_profile_invalid(self):
+    def test_C13_profile_invalid(self):
         with self.assertRaises(Exception) as context:
             c13.profile_for("foo@bar.com&role=admin")
 
         # Checks exception message
         self.assertEqual("Invalid email!", context.exception.args[0])
 
-    def test_encrypt_decrypt(self):
+    def test_C13_encrypt_decrypt(self):
         expected = "test=great&outcome=correct&time=wellspent&percentage=100"
 
         # Super secret
@@ -103,24 +91,15 @@ class C13(unittest.TestCase):
 
         self.assertEqual(actual, expected)
 
-
-class C14(unittest.TestCase):
-
-    def test(self):
+    def test_C14(self):
         # [2:-1] Is removing the b'' notation
         expected = str(base64.b64decode(c14.target_bytes))[2:-1]
         actual = c14.task14()
 
         self.assertEqual(actual, expected)
 
-
-class C15(unittest.TestCase):
-
-    def test(self):
+    def test_C15(self):
         c15.task15()
 
-
-class C16(unittest.TestCase):
-
-    def test(self):
+    def test_C16(self):
         self.assertEqual(c16.task16(), True)
