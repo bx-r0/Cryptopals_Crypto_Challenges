@@ -7,7 +7,7 @@ import sys
 import os
 
 """
->>> Implement and break HMAC-SHA1 with an artificial timing leak
+>>> Break HMAC-SHA1 with a slightly less artificial timing leak
 """
 
 key = b"lemonade"
@@ -24,15 +24,18 @@ def timeRequest(signatureTry):
     s = f"sendGetRequest(\"{maliciousFileName}\", \"{signature}\")"
     return timeit.timeit(s, number=1, setup="from __main__ import sendGetRequest")
 
-def task31():
-    
-    signatureTry = ["XX"] * 20
-    previousTime = ""
+def task32():
+    print()
 
+    signatureTry = ["XX"] * 20
+    print(" ".join(signatureTry), end='\r')
+    
     # Sets base time
-    previousTime = timeRequest(signatureTry)
+    baseTime = timeRequest(signatureTry)
     
     for signatureCharPosition in range(0, 20):
+
+        timings = []
         for i in range(0, 255):
 
             # Grabs hex value
@@ -42,13 +45,24 @@ def task31():
             signatureTry[signatureCharPosition] = h
             newTime = timeRequest(signatureTry)
 
-            if previousTime < newTime - 0.025:
-                previousTime = newTime
-                break
+            timings.append([baseTime - newTime, newTime,  i])
 
-            print(" ".join(signatureTry), end='\r')
+        timings.sort()
+
+        hexByte = hex(timings[0][2])[2:].zfill(2)
+
+        # Adds new value to the list
+        signatureTry[signatureCharPosition] = hexByte
+
+        # Sets a new base time
+        baseTime = timings[0][1]
+
+        # Resets timings
+        timings = []
+
+        print(" ".join(signatureTry), end='\r')
 
     # Final print
     print("".join(signatureTry))
 
-task31()
+task32()

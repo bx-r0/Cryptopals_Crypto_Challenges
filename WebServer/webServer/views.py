@@ -1,4 +1,4 @@
-import sys ; sys.path += ['.', '../..', '../../..']
+import sys ; sys.path += ['.', '..']
 from django.shortcuts import render
 from django.http import HttpResponse
 from SharedCode import Function
@@ -8,23 +8,33 @@ import base64
 from time import sleep
 import re
 
-key = b"lemonade"
-
+# End points
 def index(request):
+    return HttpResponse("Index")
+
+def challenge31(request):
+    # 50ms wait
+    return validateHMAC(request, 0.05)
+
+def challenge32(request):
+    # No artifical wait
+    return validateHMAC(request, 0)
+
+# Shared code
+def validateHMAC(request, waitTime):
+    key = b"lemonade"
 
     file = request.GET.get("file", None)
     signature = request.GET.get("signature", None)
-
 
     responseCode = 0
 
     if file != None and signature != None:
         checkedSignature = HMAC.SHA.createHex(key, file.encode('utf-8'))
-        print(checkedSignature)
         checkedSignature = Function.Conversion.remove_byte_notation(checkedSignature)
 
         responseCode = 500
-        if insecureCompare(signature, checkedSignature):
+        if insecureCompare(signature, checkedSignature, waitTime):
             responseCode = 200
 
     else:
@@ -35,7 +45,7 @@ def index(request):
 
     return r
 
-def insecureCompare(signatureA, signatureB):
+def insecureCompare(signatureA, signatureB, sleepTime=0.05):
 
     signatureABytes = re.findall("..", signatureA)
     signatureBBytes = re.findall("..", signatureB)
@@ -43,5 +53,5 @@ def insecureCompare(signatureA, signatureB):
     for a, b in zip(signatureABytes, signatureBBytes):
         if not a == b:
             return False
-        sleep(0.02)
+        if sleepTime > 0: sleep(sleepTime)
     return True
