@@ -44,7 +44,7 @@ https://cryptopals.com/
   - [X] ~~Break a SHA-1 keyed MAC using length extension~~
   - [X] ~~Break an MD4 keyed MAC using length extension~~
   - [X] ~~Implement and break HMAC-SHA1 with an artificial timing leak~~
-  - [ ] Break HMAC-SHA1 with a slightly less artificial timing leak
+  - [X] ~~Break HMAC-SHA1 with a slightly less artificial timing leak~~
 
 ## Set 5 - Diffie-Hellman and friends
   - [ ] Implement Diffie-Hellman
