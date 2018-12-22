@@ -1,5 +1,6 @@
+import sys ; sys.path += ['.', '../..']
 import unittest
-from SharedCode.MD4 import MD4
+from CryptoCode.MD4 import MD4
 
 
 class MD4Tests(unittest.TestCase):

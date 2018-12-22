@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-from SharedCode import MT19937 as MT
+from CryptoCode import MT19937 as MT
 
 """
 >>> Clone an MT19937 RNG from its output

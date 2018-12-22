@@ -1,5 +1,6 @@
-from SharedCode.SHA1 import SHA1
-from SharedCode.MD4 import MD4
+import sys ; sys.path += ['.', '../..']
+from CryptoCode.SHA1 import SHA1
+from CryptoCode.MD4 import MD4
 import SharedCode.Function as Function
 import base64
 

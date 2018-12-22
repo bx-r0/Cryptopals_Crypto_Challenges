@@ -1,5 +1,5 @@
 import unittest
-from SharedCode.SHA1 import SHA1
+from CryptoCode.SHA1 import SHA1
 
 
 class SHATests(unittest.TestCase):

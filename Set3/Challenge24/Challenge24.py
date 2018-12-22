@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-from SharedCode import MT19937 as M
+from CryptoCode import MT19937 as M
 from SharedCode import Function
 from random import randint
 import base64

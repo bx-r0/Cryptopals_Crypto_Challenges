@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-from SharedCode.MAC import HMAC
+from CryptoCode.MAC import HMAC
 import requests
 import timeit
 import string

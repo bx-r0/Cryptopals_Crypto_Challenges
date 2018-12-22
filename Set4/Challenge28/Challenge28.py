@@ -1,5 +1,5 @@
 import sys ; sys.path += ['.', '../..']
-from SharedCode.MAC import MAC
+from CryptoCode.MAC import MAC
 from SharedCode import Function
 
 """

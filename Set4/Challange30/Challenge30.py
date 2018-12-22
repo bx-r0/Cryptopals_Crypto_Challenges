@@ -1,8 +1,8 @@
 import sys ; sys.path += ['.', '../..']
 from bitstring import BitArray
 from SharedCode import Function
-from SharedCode.MD4 import MD4
-from SharedCode.MAC import MAC
+from CryptoCode.MD4 import MD4
+from CryptoCode.MAC import MAC
 import struct
 import base64
 import re
