@@ -47,7 +47,7 @@ https://cryptopals.com/
   - [X] ~~Break HMAC-SHA1 with a slightly less artificial timing leak~~
 
 ## Set 5 - Diffie-Hellman and friends
-  - [ ] Implement Diffie-Hellman
+  - [X] ~~Implement Diffie-Hellman~~
   - [ ] Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection
   - [ ] Implement DH with negotiated groups, and break with malicious "g" parameters
   - [ ] Implement Secure Remote Password (SRP)
