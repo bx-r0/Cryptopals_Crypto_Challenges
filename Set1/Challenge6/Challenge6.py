@@ -116,8 +116,8 @@ def calculate_hamming_distance(string1, string2):
 
     # Compares each binary value 1 for 1
     count=0
-    for i in range(0, len(binary1)):
-        if binary1[i] != binary2[i]:
+    for index, bVal in enumerate(binary1):
+        if bVal != binary2[index]:
             count += 1
 
     return count
@@ -147,4 +147,5 @@ def transpose_bytes(data_chunks):
 
 
 if __name__ == "__main__":
-    task6()
+    x = task6()
+    print(x)
