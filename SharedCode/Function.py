@@ -3,7 +3,6 @@ import random
 import codecs
 import string
 import base64
-import sys
 import re
 import os
 

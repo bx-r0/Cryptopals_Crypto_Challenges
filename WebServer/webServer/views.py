@@ -1,10 +1,7 @@
 import sys ; sys.path += ['.', '..']
-from django.shortcuts import render
 from django.http import HttpResponse
 from SharedCode import Function
-from CryptoCode.SHA1 import SHA1
 from CryptoCode.MAC import HMAC
-import base64
 from time import sleep
 import re
 

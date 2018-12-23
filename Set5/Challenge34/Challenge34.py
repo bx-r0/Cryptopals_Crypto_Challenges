@@ -1,6 +1,5 @@
 import sys ; sys.path += ['.', '../..']
 from CryptoCode.DiffieHellman import DiffieHellman
-from CryptoCode.SHA1 import SHA1
 from SharedCode import Function
 import base64
 
@@ -17,7 +16,8 @@ class BaseParty():
     def PRINT(self, msg):
         print(f"[{self.__class__.__name__}] > {msg}")
 
-    def decryptCipherAndIV(self, cipherAndIV, key):
+    @staticmethod
+    def decryptCipherAndIV(cipherAndIV, key):
         blocks = Function.Encryption.splitBase64IntoBlocks(cipherAndIV)
 
         # Obtains the values from the cipher text pair
@@ -28,7 +28,8 @@ class BaseParty():
 
         return base64.b64decode(msg)
 
-    def encryptMessage(self, msgBytes, key):
+    @staticmethod
+    def encryptMessage(msgBytes, key):
         msg = base64.b64encode(msgBytes)
 
         # Generates random AES key
@@ -149,30 +150,41 @@ class PartyM(BaseParty):
         # Saved for later
         self.p = data[0]
         g = data[1]
-        A = data[2]
 
         # Repacks the data but without A
         return [self.p, g, self.p]
 
     def step2(self, data):
-        
+
         # Ignores B and returns p instead
         return [self.p]
 
     # A encyption relay
     def step3(self, data):
-        # TODO - M decryption here
+        cipherTextAndIV = data[0]
+
+        # The key is just the hash of zero
+        # This is due to:
+        #    p^x % p == 0
+        self.key = Function.Encryption.splitBase64IntoBlocks(DiffieHellman.hSHA256(0))[0]
+
+        plainText = self.decryptCipherAndIV(cipherTextAndIV, self.key)
+
+        self.PRINT(plainText)
 
         # Relay
         return data
 
     # B encryption relay
     def step4(self, data):
-        # TODO - M decryption here
+        cipherTextAndIV = data[0]
 
-        # elay
+        plaintext = self.decryptCipherAndIV(cipherTextAndIV, self.key)
+
+        self.PRINT(plaintext)
+
+        # relay
         return data
-
 
 def regularCommunication():
     print("\n## [Regular communication] ##\n")

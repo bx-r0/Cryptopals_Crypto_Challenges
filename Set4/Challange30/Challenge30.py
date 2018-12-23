@@ -5,7 +5,6 @@ from CryptoCode.MD4 import MD4
 from CryptoCode.MAC import MAC
 import struct
 import base64
-import re
 
 """
 >>> Break an MD4 keyed MAC using length extension

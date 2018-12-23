@@ -1,5 +1,4 @@
 import sys ; sys.path += ['.', '..']
-from SharedCode import Function
 from Crypto.Hash import SHA256
 from random import randint
 import base64

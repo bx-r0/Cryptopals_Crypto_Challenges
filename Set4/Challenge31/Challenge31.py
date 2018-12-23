@@ -1,10 +1,7 @@
 import sys ; sys.path += ['.', '../..']
-from CryptoCode.MAC import HMAC
 import requests
 import timeit
 import string
-import sys
-import os
 
 """
 >>> Implement and break HMAC-SHA1 with an artificial timing leak

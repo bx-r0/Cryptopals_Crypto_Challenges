@@ -4,7 +4,6 @@ from SharedCode import Function
 from CryptoCode.SHA1 import SHA1
 from CryptoCode.MAC import MAC
 import base64
-import re
 
 """
 >>> Break a SHA-1 keyed MAC using length extension

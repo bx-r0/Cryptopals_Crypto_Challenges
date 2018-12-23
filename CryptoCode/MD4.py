@@ -3,7 +3,6 @@ from bitstring import BitArray
 from SharedCode import Function
 import binascii
 import struct
-import re
 
 class MD4():
     
