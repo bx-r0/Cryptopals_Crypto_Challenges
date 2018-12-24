@@ -1,4 +1,5 @@
 from Crypto.Cipher import AES
+from Crypto.Hash import SHA256
 import random
 import codecs
 import string
@@ -756,6 +757,17 @@ class Encryption():
         string = f"email={email}&uid={uid}&role={role}"
 
         return string
+
+
+class Hash():
+
+    @staticmethod
+    def SHA256_Hex(msgBytes):
+        s = SHA256.new()
+        s.update(msgBytes)
+        d = s.digest()
+        return bytes.hex(d)
+
 
 class COLOURS:
     RED = "\033[91m"

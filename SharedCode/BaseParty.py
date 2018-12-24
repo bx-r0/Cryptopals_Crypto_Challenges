@@ -1,7 +1,9 @@
 import sys ; sys.path += ['.', '../..']
+from optparse import OptionParser
 from SharedCode import Function
 from CryptoCode.DiffieHellman import DiffieHellman
 import base64
+import inspect
 
 
 class BaseParty():
@@ -9,10 +11,26 @@ class BaseParty():
     Shared code for a Party class.
     This is used to simulate two entites communicating on a network connection
     """
+
     def __init__(self):
+
+        # Generates the dictionary of methods within an object
+        # For example:
+        #   "options[1]()"  will run the method "step1" in that object
         self.options = {}
 
-    def run(self, step, data):
+        methods = inspect.getmembers(self)
+
+        for m in methods:
+
+            # Gets name of method
+            if "step" in m[0]:
+
+                key = int(m[0][4])
+
+                self.options[key] = m[1]
+    
+    def run(self, step, data=[]):
         return self.options[step](data)
 
     def PRINT(self, msg):
@@ -52,3 +70,7 @@ class BaseParty():
 
 
         return Function.Base64_To.concat([cipherText, iv])
+
+
+
+

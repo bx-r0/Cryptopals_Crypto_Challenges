@@ -8,20 +8,10 @@ import base64
 >>> Implement DH with negotiated groups, and break with malicious "g" parameters
 """
 
-
 #----------------------------------------------
 # Party A
 #----------------------------------------------
 class PartyA(BaseParty):
-
-    def __init__(self):
-        self.options = \
-            {
-                1: self.step1,
-                2: self.step2,
-                3: self.step3,
-                4: self.step4
-            }
 
     def step1(self, data):
 
@@ -61,14 +51,6 @@ class PartyA(BaseParty):
 #----------------------------------------------
 class PartyB(BaseParty):
 
-    def __init__(self):
-        self.options = \
-            {
-                1: self.step1,
-                2: self.step2,
-                3: self.step3
-            }
-    
     def step1(self, data):
 
         self.p = data[0]
@@ -104,15 +86,6 @@ class PartyB(BaseParty):
 class PartyM(BaseParty):
     
     def __init__(self, attackID):
-        self.options = \
-            {
-                1: self.step1,
-                2: self.step2,
-                3: self.step3,
-                4: self.step4,
-                5: self.step5
-            }
-
         self.attackID = attackID
 
     def step1(self, data):
@@ -128,7 +101,6 @@ class PartyM(BaseParty):
             g = p - 1
 
         return [p, g]
-
 
     def step2(self, data):
 
@@ -253,14 +225,12 @@ def MITM(attackID):
     #   Send AES-CBC(SHA1(s)[0:16], iv=random(16), A's msg) + iv
     A.run(4, M.run(5, cipherText_B))
 
-
 def task35():
     regularCommunication()
 
     # Performs the various attacks
     for x in range(3):
         MITM(x)
-
 
 if __name__ == "__main__":
     task35()

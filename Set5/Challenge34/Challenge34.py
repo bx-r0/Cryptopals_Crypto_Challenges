@@ -13,14 +13,6 @@ import base64
 #----------------------------------------------
 class PartyA(BaseParty):
 
-    def __init__(self):
-        self.options = \
-            {
-                1: self.step1,
-                2: self.step2,
-                3: self.step3
-            }
-
     def step1(self, data):
         # A sets p and g
         p = 64762727
@@ -65,13 +57,6 @@ class PartyA(BaseParty):
 #----------------------------------------------
 class PartyB(BaseParty):
 
-    def __init__(self):
-        self.options = \
-            {
-                1: self.step1,
-                2: self.step2
-            }
-
     def step1(self, data):
         """
         B recieves p, g, A in a list
@@ -103,15 +88,6 @@ class PartyB(BaseParty):
 # MITM
 #----------------------------------------------
 class PartyM(BaseParty):
-    
-    def __init__(self):
-        self.options = \
-            {
-                1: self.step1,
-                2: self.step2,
-                3: self.step3,
-                4: self.step4
-            }
 
     def step1(self, data):
 
@@ -153,6 +129,8 @@ class PartyM(BaseParty):
 
         # relay
         return data
+
+
 
 def regularCommunication():
     print("\n## [Regular communication] ##\n")
