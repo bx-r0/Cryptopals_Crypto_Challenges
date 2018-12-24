@@ -1,44 +1,12 @@
 import sys ; sys.path += ['.', '../..']
 from CryptoCode.DiffieHellman import DiffieHellman
 from SharedCode import Function
+from SharedCode.BaseParty import BaseParty
 import base64
 
-class BaseParty():
-    """
-    Shared code from both Party classes
-    """
-    def __init__(self):
-        self.options = {}
-
-    def run(self, step, data):
-        return self.options[step](data)
-
-    def PRINT(self, msg):
-        print(f"[{self.__class__.__name__}] > {msg}")
-
-    @staticmethod
-    def decryptCipherAndIV(cipherAndIV, key):
-        blocks = Function.Encryption.splitBase64IntoBlocks(cipherAndIV)
-
-        # Obtains the values from the cipher text pair
-        cipherText = Function.Base64_To.concat(blocks[:len(blocks) - 1])
-        iv = blocks[-1]
-
-        msg = Function.Encryption.AES.CBC.Decrypt(iv, key, cipherText)
-
-        return base64.b64decode(msg)
-
-    @staticmethod
-    def encryptMessage(msgBytes, key):
-        msg = base64.b64encode(msgBytes)
-
-        # Generates random AES key
-        iv = Function.Encryption.AES.randomKeyBase64()
-
-        cipherText = Function.Encryption.AES.CBC.Encrypt(iv, key, msg)
-
-
-        return Function.Base64_To.concat([cipherText, iv])
+"""
+>>> Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection
+"""
 
 #----------------------------------------------
 # Party A
@@ -234,7 +202,10 @@ def MITM_KeyFixing():
     #   Send AES-CBC(SHA1(s)[0:16], iv=random(16), A's msg) + iv
     A.run(3, M.run(4, [B_encryption]))
 
-if __name__ == "__main__":
+def task34():
     regularCommunication()
     MITM_KeyFixing()
+
+if __name__ == "__main__":
+    task34()
     

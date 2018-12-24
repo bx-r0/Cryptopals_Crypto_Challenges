@@ -49,7 +49,7 @@ https://cryptopals.com/
 ## Set 5 - Diffie-Hellman and friends
   - [X] ~~Implement Diffie-Hellman~~
   - [X] ~~Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection~~
-  - [ ] Implement DH with negotiated groups, and break with malicious "g" parameters
+  - [X] ~~Implement DH with negotiated groups, and break with malicious "g" parameters~~
   - [ ] Implement Secure Remote Password (SRP)
   - [ ] Break SRP with a zero key
   - [ ] Offline dictionary attack on simplified SRP
