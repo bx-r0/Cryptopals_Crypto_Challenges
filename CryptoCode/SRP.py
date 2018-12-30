@@ -11,6 +11,8 @@ class SRP():
 
     @staticmethod
     def H(*args):
+
+        # Concats the values
         a = "".join(str(a) for a in args)
         msgBytes = a.encode("utf-8")
         hashHex = Function.Hash.SHA256_Hex(msgBytes)
@@ -29,9 +31,9 @@ class SRP():
         self.I = username
         self.p = password
         self.salt = SRP.randBits(64)
-        self.x = SRP.H(self.salt, self.I, self.p)
+        self.x = SRP.H(self.salt, self.p)
         self.v = pow(self.g, self.x, self.N)
         
         # Diffie-Hellman
-        self.dPrivate = SRP.randBits(1024)
-        self.dPublic = self.k * self.v + (pow(self.g, self.dPrivate, self.N))
+        self.b = SRP.randBits(1024)
+        self.B = (self.k * self.v + (pow(self.g, self.b, self.N))) % self.N

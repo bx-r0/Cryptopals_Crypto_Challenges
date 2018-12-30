@@ -1,13 +1,14 @@
 import sys ; sys.path += ['.', '../..']
 from SharedCode.BaseParty import BaseParty
 from CryptoCode.SRP import SRP
+from CryptoCode.MAC import HMAC
 from SharedCode import Function
+import gmpy2
+import base64
 
 """
 >>> Implement Secure Remote Password (SRP)
 """
-
-# TODO - Issue with high 'pow()' calculations halting progress
 
 #----------------------------------------------
 # Server
@@ -63,8 +64,6 @@ class Client(BaseParty):
         uH = Function.Hash.SHA256_Hex(m)
         self.u = int(uH, 16)
 
-        print()
-
     # C
     #   Generate string xH=SHA256(salt|password)
     #   Convert xH to integer x somehow (put 0x on hexdigest)
@@ -75,12 +74,22 @@ class Client(BaseParty):
         xH = Function.Hash.SHA256_Hex((str(self.salt) + self.P).encode('utf-8'))
         x = int(xH, 16)
 
-        l = self.B - self.k * pow(self.g, x)
-        r = self.a + self.u * x
-
-        S = pow(l, r, self.N)
+        S = pow((self.B - self.k * pow(self.g, x, self.N)), (self.a + self.u * x), self.N)
 
         self.K = Function.Hash.SHA256_Hex(str(S).encode('utf-8'))
+
+
+    # [C] -> S
+    #   Send HMAC-SHA256(K, salt)
+    def step5(self, data):
+
+        keyBytes = base64.b64decode(Function.HexTo.base64(self.K))
+        messageBytes = str(self.salt).encode('utf-8')
+
+        # Creates the tag
+        tagBase64 = HMAC.SHA.create(keyBytes, messageBytes)
+
+        return [tagBase64, self.salt]
 
 #----------------------------------------------
 # Server
@@ -108,7 +117,7 @@ class Server(BaseParty):
     def step2(self, data):
 
         # Generates SRP object
-        self.SRP = SRP(self.I, self.p, self.N, self.g, self.k)
+        self.srp = SRP(self.I, self.p, self.N, self.g, self.k)
 
     # C -> [S]
     #   Send I, A=g**a % N (a la Diffie Hellman)
@@ -118,37 +127,48 @@ class Server(BaseParty):
         self.A = data[1]
 
         #Check username
-        if I != self.SRP.I:
+        if I != self.srp.I:
             raise("Incorrect username!")
 
     # [S] -> C
     #   Send salt, B=kv + g**b % N
     def step4(self, data):
 
-        m = (str(self.A) + str(self.SRP.dPublic)).encode('utf-8')
+        m = (str(self.A) + str(self.srp.B)).encode('utf-8')
 
-        uH = Function.Hash.SHA256_Hex(m)
+        self.u = int(Function.Hash.SHA256_Hex(m), 16)
 
-        self.u = int(uH, 16)
-
-        return [self.SRP.salt, self.SRP.dPublic]
+        return [self.srp.salt, self.srp.B]
 
     # S
     #   Generate S = (A * v**u) ** b % N
     #   Generate K = SHA256(S)
     def step5(self, data):
         
-        S = pow((self.A * pow(self.SRP.v, self.u)), (self.SRP.dPrivate), self.N)
+        S = pow((self.A * pow(self.srp.v, self.u, self.N)), (self.srp.b), self.N)
 
         self.K = Function.Hash.SHA256_Hex(str(S).encode('utf-8'))
+    
+    # C -> [S]
+    #   Send HMAC-SHA256(K, salt)
+    def step6(self, data):
+        tag = data[0]
+        msg = data[1]
+
+        keyBytes = base64.b64decode(Function.HexTo.base64(self.K))
+        messageBytes = str(msg).encode('utf-8')
+        
+        verified = HMAC.SHA.verify(keyBytes, messageBytes, tag)
+
+        if verified: self.PRINT("OK")
 
 
 if __name__ == "__main__":
     
-    # C & S
-    #   Agree on N=[NIST Prime], g=2, k=3, I (email), P (password)
     C, S = Client(), Server()
 
+    # C & S
+    #   Agree on N=[NIST Prime], g=2, k=3, I (email), P (password)
     S.run(1, C.run(1))
 
     # S
@@ -179,5 +199,11 @@ if __name__ == "__main__":
     #   Generate K = SHA256(S)
     S.run(5)
 
-    print(S.K)
-    print(C.K)
+
+    # C -> S
+    #   Send HMAC-SHA256(K, salt)
+    # S -> C
+    #   Send "OK" if HMAC-SHA256(K, salt) validates
+    S.run(6, C.run(5))
+
+   

@@ -82,6 +82,17 @@ class HMAC():
             return SHA1.createDigest(opad_key + innerHashBytes)
 
         @staticmethod
+        def verify(keyBytes, messageBytes, tag):
+
+            newTagBytes = HMAC.SHA.create(keyBytes, messageBytes)
+
+            # Checks the tag
+            if newTagBytes == tag:
+                return True
+
+            return False
+
+        @staticmethod
         def createHex(keyBytes, messageBytes, blocksize=64):
             base64Hash = HMAC.SHA.create(keyBytes, messageBytes, blocksize)
             return Function.Base64_To.hexadecimal(base64Hash)
