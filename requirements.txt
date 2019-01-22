@@ -1,3 +1,4 @@
-pycrypto==2.6.1
+pycryptodome==2.6.1
 django==2.1.4
 requests==2.20.1
+bitstring==3.1.5
