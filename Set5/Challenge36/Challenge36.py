@@ -10,19 +10,22 @@ import base64
 >>> Implement Secure Remote Password (SRP)
 """
 
+username = "test"
+password = "password"
+
 #----------------------------------------------
 # Server
 #----------------------------------------------
 class Client(BaseParty):
+
+
+    def __init__(self, username, password):
+        self.I = username
+        self.P  = password
     
     # [C] & S
     #   Agree on N=[NIST Prime], g=2, k=3, I (email), P (password)
     def step1(self, data):
-
-        self.I = "jDoe666"
-        self.P  = "pa$$word"
-
-        # Agrement for other variables
 
         # Large safe prime
         N = '''
@@ -75,7 +78,6 @@ class Client(BaseParty):
         x = int(xH, 16)
 
         S = pow((self.B - self.k * pow(self.g, x, self.N)), (self.a + self.u * x), self.N)
-
         self.K = Function.Hash.SHA256_Hex(str(S).encode('utf-8'))
 
 
@@ -100,13 +102,15 @@ class Server(BaseParty):
     #   Agree on N=[NIST Prime], g=2, k=3, I (email), P (password)
     def step1(self, data):
 
-        self.N = data[0]
-        self.g = data[1]
-        self.k = data[2]
+        self.N = int(data[0])
+        self.g = int(data[1])
+        self.k = int(data[2])
+
         self.I = data[3]
         self.p = data[4]
 
         self.PRINT("ACK")
+        return "ACK"
 
     # [S]
     #     Generate salt as random integer
@@ -144,11 +148,12 @@ class Server(BaseParty):
     #   Generate S = (A * v**u) ** b % N
     #   Generate K = SHA256(S)
     def step5(self, data):
-        
         S = pow((self.A * pow(self.srp.v, self.u, self.N)), (self.srp.b), self.N)
 
         self.K = Function.Hash.SHA256_Hex(str(S).encode('utf-8'))
-    
+        print("[C36]", self.K)
+
+
     # C -> [S]
     #   Send HMAC-SHA256(K, salt)
     def step6(self, data):
@@ -160,12 +165,16 @@ class Server(BaseParty):
         
         verified = HMAC.SHA.verify(keyBytes, messageBytes, tag)
 
-        if verified: self.PRINT("OK")
+        if verified: 
+            self.PRINT("OK")
+            return "OK"
+        else:
+            return None
 
 
 if __name__ == "__main__":
     
-    C, S = Client(), Server()
+    C, S = Client(username, password), Server()
 
     # C & S
     #   Agree on N=[NIST Prime], g=2, k=3, I (email), P (password)

@@ -32,6 +32,7 @@ class SRP():
         self.p = password
         self.salt = SRP.randBits(64)
         self.x = SRP.H(self.salt, self.p)
+
         self.v = pow(self.g, self.x, self.N)
         
         # Diffie-Hellman

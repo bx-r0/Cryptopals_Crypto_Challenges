@@ -31,6 +31,8 @@ class BaseParty():
                 self.options[key] = m[1]
     
     def run(self, step, data=[]):
+
+        # TODO - Add dynmaic method finding
         return self.options[step](data)
 
     def PRINT(self, msg):

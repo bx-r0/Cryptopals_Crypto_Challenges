@@ -51,7 +51,7 @@ https://cryptopals.com/
   - [X] ~~Implement a MITM key-fixing attack on Diffie-Hellman with parameter injection~~
   - [X] ~~Implement DH with negotiated groups, and break with malicious "g" parameters~~
   - [X] ~~Implement Secure Remote Password (SRP)~~
-  - [ ] Break SRP with a zero key
+  - [X] ~~Break SRP with a zero key~~
   - [ ] Offline dictionary attack on simplified SRP
   - [ ] Implement RSA
   - [ ] Implement an E=3 RSA Broadcast attack
