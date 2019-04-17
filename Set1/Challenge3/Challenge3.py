@@ -40,6 +40,7 @@ def task3():
         # Regex to check string contains alphanumeric values and punctuation
         if re.match('^[A-Za-z _.,!"\'$]*$', answer) is not None:
             # Answer found
+            print(answer)
             return k
 
 if __name__ == "__main__":

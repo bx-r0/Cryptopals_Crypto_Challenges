@@ -31,4 +31,4 @@ def task8():
     return ecb_candiates
 
 if __name__ == "__main__":
-    task8()
+    print(task8())

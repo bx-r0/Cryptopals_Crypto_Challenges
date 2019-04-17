@@ -45,4 +45,4 @@ def encrypt(msg):
     return xor
 
 if __name__ == "__main__":
-    task5()
+    print(task5())

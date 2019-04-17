@@ -36,4 +36,4 @@ def task7():
 
 if __name__ == "__main__":
     pt = task7()
-    print(pt)
+    print(base64.b64decode(pt).decode("utf-8"))
