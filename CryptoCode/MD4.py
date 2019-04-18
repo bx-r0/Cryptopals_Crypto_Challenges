@@ -26,68 +26,6 @@ class MD4():
     @staticmethod
     def H(x, y, z): return (x ^ y ^ z)
 
-    def __init__(self, message):
-        self.messageBinary = BitArray(bytes=message).bin
-        self.messageLength = len(self.messageBinary)
-
-        # Pads the message
-        self.messageBinary = MD4.addPadding(self.messageBinary, self.messageLength)
-        self.messageChunks = Function.splitStringIntoChunks(self.messageBinary, size=512)
-
-        # TODO: Make this work with multiple chunks?
-        chunk = self.messageChunks[0]
-        self.x = MD4.chunkToWordArray(chunk)
-
-        self.A = []
-        self.B = []
-        self.C = []
-        self.D = []
-
-        self.A.append(A_INIT)
-        self.B.append(B_INIT)
-        self.C.append(C_INIT)
-        self.D.append(D_INIT)
-
-        self.step = 0
-
-    def nextStep(self, stepJump=None):
-
-        if not stepJump is None:
-            self.step = stepJump
-        else:
-            self.step += 1
-
-        print(f"MD4 Step now: {self.step}")
-
-        A, B, C, D = MD4._round(A_INIT, B_INIT, C_INIT, D_INIT, self.x, maxStep=self.step)
-
-        self.A.append(A)
-        self.B.append(B)
-        self.C.append(C)
-        self.D.append(D)
-
-    def fullHash(self):
-        for x in range(48):
-            self.nextStep()
-        self.printSectorsAsHash()
-
-    def printSectors(self):
-        print(f"A: {self.A} - B: {self.B} - C: {self.C} - D: {self.D}")
-
-    def printSectorsAsHash(self):
-
-        A = (self.A[self.step] + A_INIT) & 0xffffffff
-        B = (self.B[self.step] + B_INIT) & 0xffffffff
-        C = (self.C[self.step] + C_INIT) & 0xffffffff
-        D = (self.D[self.step] + D_INIT) & 0xffffffff
-
-        print(MD4.sectorsToHexHashFormat(A, B, C, D))
-
-    def getBitIndexOfSection(self, sector, step, index):
-
-        sectorBin = bin(sector[step])
-        return int(sectorBin[index])
-
     @staticmethod
     def createDigest(message, ml=None, A=A_INIT, B=B_INIT, C=C_INIT, D=D_INIT):
 
