@@ -848,7 +848,11 @@ def splitStringIntoChunks(string, size):
     """
     Splits a string into a set of characters
     """
-
     pattern = ".{" + str(size) + "}"
 
     return re.findall(pattern, string)
+
+def splitBytesIntoChunks(string, size):
+    l = list(string)
+    n = max(1, size)
+    return list(l[i:i+n] for i in range(0, len(l), n))

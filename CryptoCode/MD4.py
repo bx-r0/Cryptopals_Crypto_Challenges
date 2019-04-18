@@ -10,13 +10,13 @@ B_INIT = 0xefcdab89
 C_INIT = 0x98badcfe
 D_INIT = 0x10325476
 
-
-
-
 class MD4():
 
     @staticmethod
-    def LeftRotate(m, n): return (m << n) | (m >> (32 - n))
+    def LeftRotate(n, b): return ((n << b) | ((n & 0xffffffff) >> (32 - b))) & 0xffffffff
+    
+    @staticmethod
+    def RightRotate(n, b): return ((n >> b) | ((n & 0xffffffff) << (32 - b))) & 0xffffffff
 
     # Functions
     @staticmethod
@@ -88,7 +88,6 @@ class MD4():
         sectorBin = bin(sector[step])
         return int(sectorBin[index])
 
-
     @staticmethod
     def createDigest(message, ml=None, A=A_INIT, B=B_INIT, C=C_INIT, D=D_INIT):
 
@@ -136,6 +135,13 @@ class MD4():
 
         # Converts all byte values into little endian integers
         return list(map(lambda y: int.from_bytes(y, 'little'), wordBytes))
+
+    @staticmethod
+    def byteChunkToWordArray(chunk):
+        words = Function.splitBytesIntoChunks(chunk, size=4)
+
+        # Converts all byte values into little endian integers
+        return list(map(lambda y: int.from_bytes(y, 'little'), words))
 
     @staticmethod
     def _round(A, B, C, D, m, maxStep=48):
@@ -195,8 +201,6 @@ class MD4():
                 B = MD4.LeftRotate(
                     (B + MD4.H(C, D, A) + m[k] + 0x6ed9eba1) & 0xffffffff, 15)
 
-        print(counter)
-
         return A, B, C, D
 
     @staticmethod
@@ -208,7 +212,7 @@ class MD4():
     @staticmethod
     def addPadding(messageBinary, messageLength):
         """
-        Adds padding defined in the SHA1 specification
+        Adds padding defined in the MD4 specification
         """
 
         if len(messageBinary) % 8 == 0:
