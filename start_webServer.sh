@@ -1,1 +1,1 @@
-python WebServer/manage.py runserver
+python3 WebServer/manage.py runserver

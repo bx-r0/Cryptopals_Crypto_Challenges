@@ -3,7 +3,6 @@ from SharedCode.BaseParty import BaseParty
 from CryptoCode.SRP import SRP
 from CryptoCode.MAC import HMAC
 from SharedCode import Function
-import gmpy2
 import base64
 
 """
