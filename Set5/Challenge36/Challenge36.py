@@ -13,7 +13,7 @@ username = "test"
 password = "password"
 
 #----------------------------------------------
-# Server
+# Client
 #----------------------------------------------
 class Client(BaseParty):
 

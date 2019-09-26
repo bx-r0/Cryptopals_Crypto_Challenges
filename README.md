@@ -52,8 +52,8 @@ https://cryptopals.com/
   - [X] ~~Implement DH with negotiated groups, and break with malicious "g" parameters~~
   - [X] ~~Implement Secure Remote Password (SRP)~~
   - [X] ~~Break SRP with a zero key~~
-  - [ ] Offline dictionary attack on simplified SRP
-  - [ ] Implement RSA
+  - [X] ~~Offline dictionary attack on simplified SRP~~
+  - [X] ~~Implement RSA~~
   - [ ] Implement an E=3 RSA Broadcast attack
 
 ## Set 6 - RSA and DSA
