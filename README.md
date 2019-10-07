@@ -54,7 +54,7 @@ https://cryptopals.com/
   - [X] ~~Break SRP with a zero key~~
   - [X] ~~Offline dictionary attack on simplified SRP~~
   - [X] ~~Implement RSA~~
-  - [ ] Implement an E=3 RSA Broadcast attack
+  - [X] ~~Implement an E=3 RSA Broadcast attack~~
 
 ## Set 6 - RSA and DSA
   - [ ] Implement unpadded message recovery oracle
