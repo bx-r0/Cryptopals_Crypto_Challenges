@@ -871,7 +871,6 @@ class RSA():
         m = pow(c, private_key[0], private_key[1])
         return hex(m)[2:]
 
-
     def decrypt_to_hex(c, private_key):
         return hex(pow(c, private_key[0], private_key[1]))[2:]
 
