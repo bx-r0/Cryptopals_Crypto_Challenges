@@ -57,7 +57,7 @@ https://cryptopals.com/
   - [X] ~~Implement an E=3 RSA Broadcast attack~~
 
 ## Set 6 - RSA and DSA
-  - [ ] Implement unpadded message recovery oracle
+  - [X] ~~Implement unpadded message recovery oracle~~
   - [ ] Bleichenbacher's e=3 RSA Attack
   - [ ] DSA key recovery from nonce
   - [ ] DSA nonce recovery from repeated nonce

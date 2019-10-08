@@ -828,6 +828,11 @@ class BitFlippingAttacks():
 
 class RSA():
 
+    # NOTE:
+    #
+    #   Need to make sure the number of bits in the message is less than 
+    #   the size of 2N
+
     def gen_prime(size=2048):
         return number.getPrime(size)
 
@@ -860,6 +865,9 @@ class RSA():
 
         m = pow(c, private_key[0], private_key[1])
         return RSA.hex_to_string(hex(m)[2:])
+
+    def decrypt_to_hex(c, private_key):
+        return hex(pow(c, private_key[0], private_key[1]))[2:]
 
     def create_keys(size=1024):
         d = None
