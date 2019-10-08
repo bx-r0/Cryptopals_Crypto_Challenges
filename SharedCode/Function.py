@@ -858,13 +858,19 @@ class RSA():
 
     def encrypt(msg, public_key):
         m = int(RSA.string_to_hex(msg), 16)
+        return encrypt_raw(m, public_key)
 
+    def encrypt_raw(m, public_key):
         return pow(m, public_key[0], public_key[1])
 
     def decrypt(c, private_key):
-
         m = pow(c, private_key[0], private_key[1])
         return RSA.hex_to_string(hex(m)[2:])
+
+    def decrypt_hex(c, private_key):
+        m = pow(c, private_key[0], private_key[1])
+        return hex(m)[2:]
+
 
     def decrypt_to_hex(c, private_key):
         return hex(pow(c, private_key[0], private_key[1]))[2:]
