@@ -58,7 +58,7 @@ https://cryptopals.com/
 
 ## Set 6 - RSA and DSA
   - [X] ~~Implement unpadded message recovery oracle~~
-  - [ ] Bleichenbacher's e=3 RSA Attack
+  - [X] ~~Bleichenbacher's e=3 RSA Attack~~
   - [ ] DSA key recovery from nonce
   - [ ] DSA nonce recovery from repeated nonce
   - [ ] DSA parameter tampering

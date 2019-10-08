@@ -1,21 +1,7 @@
 import sys ; sys.path += ['.', '../..']
-from SharedCode.Function import RSA
+from SharedCode.Function import RSA, cube_root
 
 m = "Lets meet by the riverside."
-
-def cube(n):
-    """Finds the cube root of n using binary search."""
-    lo = 0
-    hi = n
-
-    while lo < hi:
-        mid = (lo + hi) // 2
-        if mid**3 < n:
-            lo = mid + 1
-        else:
-            hi = mid
-
-    return lo
 
 if __name__ == "__main__":
     
@@ -47,5 +33,5 @@ if __name__ == "__main__":
 
     c = (t0 + t1 + t2) % (n0 * n1 * n2)
 
-    x = RSA.hex_to_string(hex(cube(c))[2:])
+    x = RSA.hex_to_string(hex(cube_root(c))[2:])
     print("\n>>> ", x)

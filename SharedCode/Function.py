@@ -773,7 +773,7 @@ class Hash():
 class COLOURS:
     RED = "\033[91m"
     GREEN = "\033[92m"
-    RESET = "\033[0m"
+    RESET = "\033[0;1m"
 
     @staticmethod
     def printGreen(message):
@@ -858,7 +858,7 @@ class RSA():
 
     def encrypt(msg, public_key):
         m = int(RSA.string_to_hex(msg), 16)
-        return encrypt_raw(m, public_key)
+        return RSA.encrypt_raw(m, public_key)
 
     def encrypt_raw(m, public_key):
         return pow(m, public_key[0], public_key[1])
@@ -921,3 +921,17 @@ def splitBytesIntoChunks(string, size):
     l = list(string)
     n = max(1, size)
     return list(l[i:i+n] for i in range(0, len(l), n))
+
+def cube_root(n):
+    """Finds the cube root of n using binary search."""
+    lo = 0
+    hi = n
+
+    while lo < hi:
+        mid = (lo + hi) // 2
+        if mid**3 < n:
+            lo = mid + 1
+        else:
+            hi = mid
+
+    return lo
